@@ -6,28 +6,19 @@ from tqdm import tqdm
 normal = 0
 polar = 1
 
-scatter = 0
-plot = 1
 
-
-def draw(xs, ys, draw_args):
-    plt.figure(figsize=draw_args.get('figsize', None))
-
-    if draw_args.get('draw_type', scatter) == scatter:
-        plt.scatter(xs, ys, s=1, c=draw_args.get('color', 'r'), marker=',')
-    elif draw_args.get('draw_type', scatter) == plot:
-        plt.plot(xs, ys, c=draw_args.get('color', 'r'))
-
+def draw(draw_args=dict()):
     plt.xlim(*draw_args.get('xlim', (None, None)))
     plt.ylim(*draw_args.get('ylim', (None, None)))
     plt.title(draw_args.get('title', ''))
 
     if draw_args.get('save_path', None) is not None:
         plt.savefig(draw_args.get('save_path'))
+
     plt.show()
 
 
-def recursion(start_xx, start_yy, start_set, batch_steps, steps, line_width, func):
+def recursion(start_xx, start_yy, start_set, batch_steps, steps, eps, func):
     step_width = (start_xx[1] - start_xx[0], start_yy[1] - start_yy[0])
     result = np.zeros((steps * batch_steps, steps * batch_steps), dtype=np.int8)
 
@@ -41,9 +32,9 @@ def recursion(start_xx, start_yy, start_set, batch_steps, steps, line_width, fun
             for j, y in enumerate(yy):
                 r = func(x, y)
                 if type(r) is list:
-                    r = any([abs(_) < line_width for _ in r])
+                    r = any([abs(_) < eps for _ in r])
                 elif type(r) is np.float64:
-                    r = abs(r) < line_width
+                    r = abs(r) < eps
 
                 if r:
                     result[idx * 2 + i][idy * 2 + j] = 1
@@ -56,38 +47,37 @@ def recursion(start_xx, start_yy, start_set, batch_steps, steps, line_width, fun
     return border_set
 
 
-def paint2d_with_unpack_function(xaxis=None, yaxis=None,
-                                 axis_type=normal, taxis=None, raxis=None,
-                                 steps=2 ** 13, line_width=2 ** -7,
-                                 func=None, draw_args=dict):
+def paint2d_with_unpack_function2(xaxis=None, yaxis=None,
+                                  axis_type=normal, taxis=None, raxis=None,
+                                  steps=2 ** 5,
+                                  func=None, draw_args=dict(), **kwargs):
+    """二分描点"""
     if axis_type == polar:
         axis1, axis2 = taxis, raxis
     else:
         axis1, axis2 = xaxis, yaxis
 
-    iterate = int(np.log2(steps)) - 6
+    eps = kwargs.get('eps', 2 ** 1)
+    iterate = kwargs.get('iterate', 7)
     batch_steps = 2
-
-    start_steps = steps // 2 ** (iterate + 1)
-    start_line_width = line_width * 2 ** (iterate + 1)
-
     start_set = set()
-    for i in range(start_steps):
-        for j in range(start_steps):
+
+    for i in range(steps):
+        for j in range(steps):
             start_set.add(tuple([i, j]))  # start border
 
     for _ in range(iterate):
-        xx = np.linspace(*axis1, start_steps)
-        yy = np.linspace(*axis2, start_steps)
+        xx = np.linspace(*axis1, steps)
+        yy = np.linspace(*axis2, steps)
 
-        start_set = recursion(xx, yy, start_set, batch_steps, start_steps, start_line_width, func)
+        start_set = recursion(xx, yy, start_set, batch_steps, steps, eps, func)
 
-        start_steps *= 2
-        start_line_width /= 2
+        steps *= 2
+        eps /= 2
 
     xs, ys = [], []
-    xx = np.linspace(*axis1, start_steps)
-    yy = np.linspace(*axis2, start_steps)
+    xx = np.linspace(*axis1, steps)
+    yy = np.linspace(*axis2, steps)
 
     for idn in start_set:
         x, y = xx[idn[0]], yy[idn[1]]
@@ -98,22 +88,55 @@ def paint2d_with_unpack_function(xaxis=None, yaxis=None,
             xs.append(x)
             ys.append(y)
 
-    draw(xs, ys, draw_args)
+    plt.figure(figsize=draw_args.get('figsize', None))
+    plt.scatter(xs, ys, s=1, c=draw_args.get('color', 'r'), marker=',')
+    draw(draw_args)
 
 
-def paint2d_with_unpack_function_normal(xaxis, yaxis, steps, line_width, axis_type=normal, func=None, draw_args=dict):
-    xs, ys = [], []
-    for x in tqdm(np.linspace(*xaxis, steps)):
-        for y in np.linspace(*yaxis, steps):
-            if abs(func(x, y)) < line_width:
-                xs.append(x)
-                ys.append(y)
+def paint2d_with_unpack_function(xaxis=None, yaxis=None,
+                                 axis_type=normal, taxis=None, raxis=None,
+                                 steps=2 ** 10,
+                                 func=None, draw_args=dict()):
+    """2维扩展至3维，做等高线"""
+    if axis_type == polar:
+        xaxis, yaxis = taxis, raxis
 
-    draw(xs, ys, draw_args)
+    x = np.linspace(*xaxis, steps)
+    y = np.linspace(*yaxis, steps)
+    X, Y = np.meshgrid(x, y)
+    Z = func(X, Y)
+
+    if axis_type == polar:
+        X, Y = Y * np.cos(X), Y * np.sin(X)
+
+    plt.figure(figsize=draw_args.get('figsize', None))
+    plt.contour(X, Y, Z, 0, colors=draw_args.get('color', 'r'))
+    draw(draw_args)
+
+
+def paint2d_with_unpack_function3(xaxis=None, yaxis=None,
+                                  axis_type=normal, taxis=None, raxis=None,
+                                  steps=2 ** 10,
+                                  func=None, draw_args=dict()):
+    """调包作图"""
+    from sympy import symbols, plot_implicit
+
+    x, y = symbols('x y')
+    p = plot_implicit(func(x, y), (x, *xaxis), (y, *yaxis),
+                      points=steps, line_color=draw_args.get('color', 'r'), show=False,
+                      xlim=draw_args.get('xlim', (None, None)), ylim=draw_args.get('ylim', (None, None)),
+                      title=draw_args.get('title', ''))
+
+    if draw_args.get('save_path', None) is not None:
+        p.save(draw_args.get('save_path'))
+
+    p.show()
+
+
 
 
 def paint2d_with_equation_function(xaxis_list=None, axis_type=normal, taxis_list=None,
-                                   steps=2 ** 10, func=None, draw_args=dict):
+                                   steps=2 ** 10, func=None, draw_args=dict()):
     if axis_type == polar:
         axis_list = taxis_list
     else:
@@ -130,11 +153,13 @@ def paint2d_with_equation_function(xaxis_list=None, axis_type=normal, taxis_list
                 xs.append(x)
                 ys.append(y)
 
-    draw(xs, ys, draw_args)
+    plt.figure(figsize=draw_args.get('figsize', None))
+    plt.plot(xs, ys, c=draw_args.get('color', 'r'))
+    draw(draw_args)
 
 
 def paint2d_with_transform_function(taxis_list=None, steps=2 ** 10,
-                                    func=None, draw_args=dict):
+                                    func=None, draw_args=dict()):
     xs, ys = [], []
     for taxis in taxis_list:
         for t in tqdm(np.linspace(*taxis, steps)):
@@ -142,10 +167,12 @@ def paint2d_with_transform_function(taxis_list=None, steps=2 ** 10,
             xs.append(x)
             ys.append(y)
 
-    draw(xs, ys, draw_args)
+    plt.figure(figsize=draw_args.get('figsize', None))
+    plt.plot(xs, ys, c=draw_args.get('color', 'r'))
+    draw(draw_args)
 
 
-def paint3d(xaxis=(-1, 1), yaxis=(-1, 1), zaxis=(-1, 1), steps=1000, line_width=1e-3):
+def paint3d(xaxis=(-1, 1), yaxis=(-1, 1), zaxis=(-1, 1), steps=1000, eps=1e-3):
     """http://www.matrix67.com/blog/archives/223"""
     # a = np.linspace(*xaxis, steps)
     # b = np.linspace(*yaxis, steps)
@@ -155,7 +182,7 @@ def paint3d(xaxis=(-1, 1), yaxis=(-1, 1), zaxis=(-1, 1), steps=1000, line_width=
         for i, x in enumerate(np.linspace(*xaxis, steps)):
             for j, y in enumerate(np.linspace(*yaxis, steps)):
                 if abs((x ** 2 + 9 / 4 * y ** 2 + z ** 2 - 1) ** 3
-                       - x ** 2 * z ** 3 - 9 / 80 * y ** 2 * z ** 3) < line_width:
+                       - x ** 2 * z ** 3 - 9 / 80 * y ** 2 * z ** 3) < eps:
                     xs.append(x)
                     ys.append(y)
                     zs.append(z)
