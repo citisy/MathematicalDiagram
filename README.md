@@ -41,9 +41,11 @@
 
 ####  [GrafEq](http://www.peda.com/grafeq/)
 
-神级作图软件，图像绘制能力异常强大，但不能画3d。
+神级作图软件，图像绘制能力异常强大，但不能绘制3d图像。
 
 支持Windows、Mac os 9
+
+![grafeq](img/grafeq.png)
 
 #### grapher
 

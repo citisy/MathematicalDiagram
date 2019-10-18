@@ -1,45 +1,47 @@
 from utils import *
 from numpy import sin, cos
+
+
 # from sympy import sin, cos
 
 
 def heart1():
     """http://www.mathematische-basteleien.de/heart.htm"""
 
-    paint2d_with_unpack_function(xaxis=(-1.5, 1.5), yaxis=(-1.5, 2),
-                                 func=lambda x, y: x ** 2 + (y - abs(x) ** (2 / 3)) ** 2 - 1,
-                                 draw_args={'title': 'x^2 + (y - |x|^(2/3))^2) - 1 = 0',
-                                            'save_path': 'img/heart2D_1.png'}
-                                 )
+    paint2d_with_implicit_function(xaxis=(-1.5, 1.5), yaxis=(-1.5, 2),
+                                   func=lambda x, y: x ** 2 + (y - abs(x) ** (2 / 3)) ** 2 - 1,
+                                   draw_args={'title': 'x^2 + (y - |x|^(2/3))^2) - 1 = 0',
+                                              'save_path': 'img/heart2D_1.png'}
+                                   )
 
 
 def heart2():
     """http://www.mathematische-basteleien.de/heart.htm"""
 
-    paint2d_with_unpack_function(xaxis=(-1.5, 1.5), yaxis=(-1.5, 1.5),
-                                 func=lambda x, y: (x ** 2 + y ** 2 - 1) ** 3 - x ** 2 * y ** 3,
-                                 draw_args={'title': '(x^2 + y^2 - 1)^3 - x^2 * y^3 = 0',
-                                            'save_path': 'img/heart2D_2.png'}
-                                 )
+    paint2d_with_implicit_function(xaxis=(-1.5, 1.5), yaxis=(-1.5, 1.5),
+                                   func=lambda x, y: (x ** 2 + y ** 2 - 1) ** 3 - x ** 2 * y ** 3,
+                                   draw_args={'title': '(x^2 + y^2 - 1)^3 - x^2 * y^3 = 0',
+                                              'save_path': 'img/heart2D_2.png'}
+                                   )
 
 
 def heart3():
     """http://www.mathematische-basteleien.de/heart.htm"""
 
-    paint2d_with_unpack_function(xaxis=(-1.5, 1.5), yaxis=(-1.5, 1.5),
-                                 func=lambda x, y: x ** 2 + 2 * (3 / 5 * abs(x) ** (2 / 3) - y) ** 2 - 1,
-                                 draw_args={'title': 'x^2 + 2(3/5|x|^(2/3) - y)^2 - 1 = 0',
-                                            'save_path': 'img/heart2D_3.png'}
-                                 )
+    paint2d_with_implicit_function(xaxis=(-1.5, 1.5), yaxis=(-1.5, 1.5),
+                                   func=lambda x, y: x ** 2 + 2 * (3 / 5 * abs(x) ** (2 / 3) - y) ** 2 - 1,
+                                   draw_args={'title': 'x^2 + 2(3/5|x|^(2/3) - y)^2 - 1 = 0',
+                                              'save_path': 'img/heart2D_3.png'}
+                                   )
 
 
 def heart4():
     """http://www.mathematische-basteleien.de/heart.htm"""
-    paint2d_with_unpack_function(xaxis=(-2, 2), yaxis=(-2, 3),
-                                 func=lambda x, y: x ** 2 + (y - abs(x) ** (1 / 2)) ** 2 - 3,
-                                 draw_args={'title': 'x^2 + (y - sqrt(|x|))^2 - 3 = 0',
-                                            'save_path': 'img/heart2D_4.png'}
-                                 )
+    paint2d_with_implicit_function(xaxis=(-2, 2), yaxis=(-2, 3),
+                                   func=lambda x, y: x ** 2 + (y - abs(x) ** (1 / 2)) ** 2 - 3,
+                                   draw_args={'title': 'x^2 + (y - sqrt(|x|))^2 - 3 = 0',
+                                              'save_path': 'img/heart2D_4.png'}
+                                   )
 
 
 def heart5():
@@ -55,18 +57,18 @@ def heart5():
 
 def heart6():
     """http://www.mathematische-basteleien.de/heart.htm"""
-    paint2d_with_unpack_function(xaxis=(-4.5, 4.5), yaxis=(-4.5, 4.5),
-                                 func=lambda x, y: 17 * x ** 2 - 16 * abs(x) * y + 17 * y ** 2 + 150 / abs(
-                                     5 * x + sin(5 * y)) - 225,
-                                 draw_args={'title': '17x^2 - 16|x|y + 17y^2 + 150/|5x + sin(5y)| = 225',
-                                            'save_path': 'img/heart2D_6.png'}
-                                 )
+    paint2d_with_implicit_function(xaxis=(-4.5, 4.5), yaxis=(-4.5, 4.5),
+                                   func=lambda x, y: 17 * x ** 2 - 16 * abs(x) * y + 17 * y ** 2 + 150 / abs(
+                                       5 * x + sin(5 * y)) - 225,
+                                   draw_args={'title': '17x^2 - 16|x|y + 17y^2 + 150/|5x + sin(5y)| = 225',
+                                              'save_path': 'img/heart2D_6.png'}
+                                   )
 
 
 def heart7():
     """http://www.mathematische-basteleien.de/heart.htm"""
 
-    paint2d_with_equation_function(axis_type=polar,
+    paint2d_with_explicit_function(axis_type=polar,
                                    taxis_list=((-np.pi, -np.pi / 2), (np.pi / 2, np.pi)),
                                    steps=2 ** 10,
                                    func=lambda t: 5 * sin(t) ** 7 * np.exp(abs(2 * t)),
@@ -79,7 +81,7 @@ def heart7():
 def heart8():
     """http://www.mathematische-basteleien.de/heart.htm"""
 
-    paint2d_with_equation_function(axis_type=polar,
+    paint2d_with_explicit_function(axis_type=polar,
                                    taxis_list=((-np.pi * 2, np.pi * 2),),
                                    steps=2 ** 10,
                                    func=lambda t: 1 - sin(t),
@@ -91,81 +93,81 @@ def heart8():
 
 def equation1():
     """http://www.matrix67.com/blog/archives/4447"""
-    paint2d_with_unpack_function(xaxis=(-10, 10), yaxis=(-10, 10),
-                                 func=lambda x, y: np.exp(sin(x) + cos(y)) - sin(np.exp(x + y)),
-                                 draw_args={'title': 'exp(sin(x) + cos(y)) = sin(exp(x + y))',
-                                            'save_path': 'img/equation1.png',
-                                            'figsize': (12, 12)}
-                                 )
+    paint2d_with_implicit_function(xaxis=(-10, 10), yaxis=(-10, 10),
+                                   func=lambda x, y: np.exp(sin(x) + cos(y)) - sin(np.exp(x + y)),
+                                   draw_args={'title': 'exp(sin(x) + cos(y)) = sin(exp(x + y))',
+                                              'save_path': 'img/equation1.png',
+                                              'figsize': (12, 12)}
+                                   )
 
 
 def equation2():
     """http://www.matrix67.com/blog/archives/4447"""
-    paint2d_with_unpack_function(xaxis=(-10, 10), yaxis=(-10, 10),
-                                 func=lambda x, y: sin(sin(x) + cos(y)) - cos(sin(x * y) - cos(x)),
-                                 draw_args={'title': 'sin(sin(x) + cos(y)) = cos(sin(xy) + cos(x))',
-                                            'save_path': 'img/equation2.png',
-                                            'figsize': (12, 12)}
-                                 )
+    paint2d_with_implicit_function(xaxis=(-10, 10), yaxis=(-10, 10),
+                                   func=lambda x, y: sin(sin(x) + cos(y)) - cos(sin(x * y) - cos(x)),
+                                   draw_args={'title': 'sin(sin(x) + cos(y)) = cos(sin(xy) + cos(x))',
+                                              'save_path': 'img/equation2.png',
+                                              'figsize': (12, 12)}
+                                   )
 
 
 def equation3():
     """http://www.matrix67.com/blog/archives/4447"""
-    paint2d_with_unpack_function(xaxis=(-10, 10), yaxis=(-10, 10),
-                                 func=lambda x, y: sin(x ** 2 + y ** 2) - cos(x * y),
-                                 draw_args={'title': 'sin(x^2 + y^2) = cos(xy)',
-                                            'save_path': 'img/equation3.png',
-                                            'figsize': (12, 12)}
-                                 )
+    paint2d_with_implicit_function(xaxis=(-10, 10), yaxis=(-10, 10),
+                                   func=lambda x, y: sin(x ** 2 + y ** 2) - cos(x * y),
+                                   draw_args={'title': 'sin(x^2 + y^2) = cos(xy)',
+                                              'save_path': 'img/equation3.png',
+                                              'figsize': (12, 12)}
+                                   )
 
 
 def equation4():
     """http://www.matrix67.com/blog/archives/4447"""
-    paint2d_with_unpack_function(xaxis=(-10, 10), yaxis=(-10, 10),
-                                 func=lambda x, y: abs(sin(x ** 2 + 2 * x * y)) - sin(x - 2 * y),
-                                 draw_args={'title': '|sin(x^2 + 2xy)| = sin(x - 2y)',
-                                            'save_path': 'img/equation4.png',
-                                            'figsize': (12, 12)}
-                                 )
+    paint2d_with_implicit_function(xaxis=(-10, 10), yaxis=(-10, 10),
+                                   func=lambda x, y: abs(sin(x ** 2 + 2 * x * y)) - sin(x - 2 * y),
+                                   draw_args={'title': '|sin(x^2 + 2xy)| = sin(x - 2y)',
+                                              'save_path': 'img/equation4.png',
+                                              'figsize': (12, 12)}
+                                   )
 
 
 def equation5():
     """http://www.matrix67.com/blog/archives/4447"""
-    paint2d_with_unpack_function(xaxis=(-10, 10), yaxis=(-10, 10),
-                                 func=lambda x, y: abs(sin(x ** 2 - y ** 2)) - sin(x + y) - cos(x * y),
-                                 draw_args={'title': '|sin(x^2 - y^2)| = sin(x + y) + cos(xy)',
-                                            'save_path': 'img/equation5.png',
-                                            'figsize': (12, 12)}
-                                 )
+    paint2d_with_implicit_function(xaxis=(-10, 10), yaxis=(-10, 10),
+                                   func=lambda x, y: abs(sin(x ** 2 - y ** 2)) - sin(x + y) - cos(x * y),
+                                   draw_args={'title': '|sin(x^2 - y^2)| = sin(x + y) + cos(xy)',
+                                              'save_path': 'img/equation5.png',
+                                              'figsize': (12, 12)}
+                                   )
 
 
 def equation6():
     """http://www.matrix67.com/blog/archives/4447"""
-    paint2d_with_unpack_function(xaxis=(-10, 10), yaxis=(-10, 10),
-                                 func=lambda x, y: x / sin(x) + y / sin(y) - (x * y) / sin(x * y),
-                                 # func=lambda x, y: [
-                                 #     (x / sin(x)) ** 2 - (y / sin(y) - (x * y) / sin(x * y)) ** 2,
-                                 #     (x / sin(x)) ** 2 - (y / sin(y) + (x * y) / sin(x * y)) ** 2,
-                                 # ],
-                                 draw_args={'title': 'x/sin(x) +- y/sin(y) = +-xy/sin(xy)',
-                                            'save_path': 'img/equation6.png',
-                                            'figsize': (12, 12)}
-                                 )
+    paint2d_with_implicit_function(xaxis=(-10, 10), yaxis=(-10, 10),
+                                   func=lambda x, y: x / sin(x) + y / sin(y) - (x * y) / sin(x * y),
+                                   # func=lambda x, y: [
+                                   #     (x / sin(x)) ** 2 - (y / sin(y) - (x * y) / sin(x * y)) ** 2,
+                                   #     (x / sin(x)) ** 2 - (y / sin(y) + (x * y) / sin(x * y)) ** 2,
+                                   # ],
+                                   draw_args={'title': 'x/sin(x) +- y/sin(y) = +-xy/sin(xy)',
+                                              'save_path': 'img/equation6.png',
+                                              'figsize': (12, 12)}
+                                   )
 
 
 def equation7():
-    paint2d_with_unpack_function(xaxis=(-1.5, 1.5), yaxis=(-1.5, 1.5),
-                                 func=lambda x, y: (x ** 2 + y ** 2 - 1) ** 2 - (x * y) ** 2,
-                                 draw_args={'title': '(x^2 + y^2 - 1)^2 = (xy)^2',
-                                            'save_path': 'img/equation7.png',
-                                            'figsize': (12, 12)}
-                                 )
+    paint2d_with_implicit_function(xaxis=(-1.5, 1.5), yaxis=(-1.5, 1.5),
+                                   func=lambda x, y: (x ** 2 + y ** 2 - 1) ** 2 - (x * y) ** 2,
+                                   draw_args={'title': '(x^2 + y^2 - 1)^2 = (xy)^2',
+                                              'save_path': 'img/equation7.png',
+                                              'figsize': (12, 12)}
+                                   )
 
 
 def equation8():
     """https://www.zhihu.com/question/20603242"""
 
-    paint2d_with_equation_function(axis_type=polar, taxis_list=((-8 * np.pi, 8 * np.pi),),
+    paint2d_with_explicit_function(axis_type=polar, taxis_list=((-8 * np.pi, 8 * np.pi),),
                                    steps=2 ** 12,
                                    func=lambda t: t + 3 * sin(4 * t) - 5 * cos(4 * t),
                                    draw_args={'title': 'r = t + 3sin(4t) - 5cos(4t)',
@@ -177,45 +179,46 @@ def equation8():
 def equation9():
     """https://www.zhihu.com/question/20603242"""
 
-    paint2d_with_unpack_function(xaxis=(-5, 5), yaxis=(-5, 5),
-                                 func=lambda x, y: sin(x ** 2 + y ** 2) - cos(x - y),
-                                 draw_args={'title': 'sin(x^2 + y^2) = cos(x - y)',
-                                            'save_path': 'img/equation9.png',
-                                            'figsize': (12, 12)}
-                                 )
+    paint2d_with_implicit_function(xaxis=(-5, 5), yaxis=(-5, 5),
+                                   func=lambda x, y: sin(x ** 2 + y ** 2) - cos(x - y),
+                                   draw_args={'title': 'sin(x^2 + y^2) = cos(x - y)',
+                                              'save_path': 'img/equation9.png',
+                                              'figsize': (12, 12)}
+                                   )
 
 
 def equation10():
     """https://www.zhihu.com/question/20603242"""
 
-    paint2d_with_unpack_function(xaxis=(-4 * np.pi, 4 * np.pi), yaxis=(-4 * np.pi, 4 * np.pi),
-                                 func=lambda x, y: sin(x) ** sin(y) + sin(y) ** sin(x) - sin(
-                                     x ** 2 + y ** 2),
-                                 draw_args={'title': 'sin(x^2 + y^2) = sin(x)^sin(y) + sin(y)^sin(x)',
-                                            'save_path': 'img/equation10.png',
-                                            'figsize': (12, 12),
-                                            }
-                                 )
+    paint2d_with_implicit_function(xaxis=(-4 * np.pi, 4 * np.pi), yaxis=(-4 * np.pi, 4 * np.pi),
+                                   func=lambda x, y: sin(x) ** sin(y) + sin(y) ** sin(x) - sin(
+                                       x ** 2 + y ** 2),
+                                   draw_args={'title': 'sin(x^2 + y^2) = sin(x)^sin(y) + sin(y)^sin(x)',
+                                              'save_path': 'img/equation10.png',
+                                              'figsize': (12, 12),
+                                              }
+                                   )
 
 
 def nb():
     """https://www.zhihu.com/question/20603242"""
 
-    paint2d_with_unpack_function(xaxis=(-3, 4), yaxis=(-2, 2),
-                                 func=lambda x, y: (1 + 2 * np.sqrt(-(abs(y) - 1) ** 2 + 1) - x) * (
-                                         x ** 3 + x ** 2 - 2 * x) * (y + 2 * x + 2),
-                                 draw_args={'title': '(1 + 2sqrt(-(|y|-1)^2 + 1) - x)(x^3 + x^2 - 2x)(y + 2x + 2) = 0',
-                                            'save_path': 'img/nb.png',
-                                            'figsize': (12, 12),
-                                            'xlim': (-4, 5),
-                                            'ylim': (-4, 4)}
-                                 )
+    paint2d_with_implicit_function(xaxis=(-3, 4), yaxis=(-2, 2),
+                                   func=lambda x, y: (1 + 2 * np.sqrt(-(abs(y) - 1) ** 2 + 1) - x) * (
+                                           x ** 3 + x ** 2 - 2 * x) * (y + 2 * x + 2),
+                                   draw_args={
+                                       'title': '(1 + 2sqrt(-(|y|-1)^2 + 1) - x)(x^3 + x^2 - 2x)(y + 2x + 2) = 0',
+                                       'save_path': 'img/nb.png',
+                                       'figsize': (12, 12),
+                                       'xlim': (-4, 5),
+                                       'ylim': (-4, 4)}
+                                   )
 
 
 def butterfly():
     """https://www.zhihu.com/question/20603242"""
 
-    paint2d_with_equation_function(axis_type=polar, taxis_list=((-12 * np.pi, 12 * np.pi),),
+    paint2d_with_explicit_function(axis_type=polar, taxis_list=((-12 * np.pi, 12 * np.pi),),
                                    steps=2 ** 12,
                                    func=lambda t: 2.7 ** sin(t) - 2 * cos(4 * t) + sin(
                                        (2 * t - np.pi) / 24) ** 5,
@@ -229,34 +232,34 @@ def butterfly():
 
 def yinyang():
     """http://www.matrix67.com/blog/archives/4447"""
-    paint2d_with_unpack_function(axis_type=polar, taxis=(0, 2 * np.pi), raxis=(0, 4),
-                                 func=lambda t, r: (cos(t - r) - sin(t)) * (
-                                         r ** 4 - 2 * r ** 2 * cos(2 * t + 2.4) + 0.9) + (0.62 * r) ** 100,
-                                 draw_args={
-                                     'title': '(cos(t - r) - sin(t))(r^4 - 2r^2cos(2t + 2.4) + 0.9) + (0.62r)^1000 = 0',
-                                     'save_path': 'img/yinyang.png',
-                                     'color': 'black',
-                                     'figsize': (12, 12),
-                                     'xlim': (-2, 2),
-                                     'ylim': (-2, 2)}
-                                 )
+    paint2d_with_implicit_function(axis_type=polar, taxis=(0, 2 * np.pi), raxis=(0, 4),
+                                   func=lambda t, r: (cos(t - r) - sin(t)) * (
+                                           r ** 4 - 2 * r ** 2 * cos(2 * t + 2.4) + 0.9) + (0.62 * r) ** 100,
+                                   draw_args={
+                                       'title': '(cos(t - r) - sin(t))(r^4 - 2r^2cos(2t + 2.4) + 0.9) + (0.62r)^1000 = 0',
+                                       'save_path': 'img/yinyang.png',
+                                       'color': 'black',
+                                       'figsize': (12, 12),
+                                       'xlim': (-2, 2),
+                                       'ylim': (-2, 2)}
+                                   )
 
 
 def bird():
     """https://www.zhihu.com/question/20603242"""
 
-    # todo: 精度不够，只有头部
-    paint2d_with_unpack_function(xaxis=(-5, 5), yaxis=(-5, 5),
-                                 func=lambda x, y: (((x ** 2 + y ** 2) * ((x - 0.05) ** 2 / 4 + (y + 3) ** 2 / 16) * (
-                                         (x + 2) ** 2 / 49 + (y - 3) ** 2 / 25) - 1.2) * (
-                                                            (x + 3) ** 2 + 25 * (y - 2.8) ** 2 - 1) - 1) * (
-                                                           (x + 2) ** 2 + (y - 2.8) ** 2 - 0.04),
-                                 draw_args={'title': '(1 + 2sqrt(-(|y|-1)^2 + 1) - x)(x^3 + x^2 - 2x)(y + 2x + 2) = 0',
-                                            'save_path': 'img/bird.png',
-                                            'figsize': (12, 12),
-                                            'xlim': (-5, 5),
-                                            'ylim': (-5, 5)}
-                                 )
+    paint2d_with_implicit_function(xaxis=(-5, 5), yaxis=(-5, 5),
+                                   func=lambda x, y: (((x ** 2 + y ** 2) * ((x - 0.05) ** 2 / 4 + (y + 3) ** 2 / 16) * (
+                                           (x + 2) ** 2 / 49 + (y - 3) ** 2 / 25) - 1.2) * (
+                                                              (x + 3) ** 2 + 25 * (y - 2.8) ** 2 - 1) - 1) * (
+                                                             (x + 2) ** 2 + (y - 2.8) ** 2 - 0.04),
+                                   draw_args={
+                                       'title': '(1 + 2sqrt(-(|y|-1)^2 + 1) - x)(x^3 + x^2 - 2x)(y + 2x + 2) = 0',
+                                       'save_path': 'img/bird.png',
+                                       'figsize': (12, 12),
+                                       'xlim': (-5, 5),
+                                       'ylim': (-5, 5)}
+                                   )
 
 
 if __name__ == '__main__':

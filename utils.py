@@ -47,10 +47,10 @@ def recursion(start_xx, start_yy, start_set, batch_steps, steps, eps, func):
     return border_set
 
 
-def paint2d_with_unpack_function2(xaxis=None, yaxis=None,
-                                  axis_type=normal, taxis=None, raxis=None,
-                                  steps=2 ** 5,
-                                  func=None, draw_args=dict(), **kwargs):
+def paint2d_with_implicit_function2(xaxis=None, yaxis=None,
+                                    axis_type=normal, taxis=None, raxis=None,
+                                    steps=2 ** 5,
+                                    func=None, draw_args=dict(), **kwargs):
     """二分描点"""
     if axis_type == polar:
         axis1, axis2 = taxis, raxis
@@ -93,10 +93,10 @@ def paint2d_with_unpack_function2(xaxis=None, yaxis=None,
     draw(draw_args)
 
 
-def paint2d_with_unpack_function(xaxis=None, yaxis=None,
-                                 axis_type=normal, taxis=None, raxis=None,
-                                 steps=2 ** 10,
-                                 func=None, draw_args=dict()):
+def paint2d_with_implicit_function(xaxis=None, yaxis=None,
+                                   axis_type=normal, taxis=None, raxis=None,
+                                   steps=2 ** 10,
+                                   func=None, draw_args=dict()):
     """2维扩展至3维，做等高线"""
     if axis_type == polar:
         xaxis, yaxis = taxis, raxis
@@ -114,10 +114,10 @@ def paint2d_with_unpack_function(xaxis=None, yaxis=None,
     draw(draw_args)
 
 
-def paint2d_with_unpack_function3(xaxis=None, yaxis=None,
-                                  axis_type=normal, taxis=None, raxis=None,
-                                  steps=2 ** 10,
-                                  func=None, draw_args=dict()):
+def paint2d_with_implicit_function3(xaxis=None, yaxis=None,
+                                    axis_type=normal, taxis=None, raxis=None,
+                                    steps=2 ** 10,
+                                    func=None, draw_args=dict()):
     """调包作图"""
     from sympy import symbols, plot_implicit
 
@@ -133,9 +133,7 @@ def paint2d_with_unpack_function3(xaxis=None, yaxis=None,
     p.show()
 
 
-
-
-def paint2d_with_equation_function(xaxis_list=None, axis_type=normal, taxis_list=None,
+def paint2d_with_explicit_function(xaxis_list=None, axis_type=normal, taxis_list=None,
                                    steps=2 ** 10, func=None, draw_args=dict()):
     if axis_type == polar:
         axis_list = taxis_list
