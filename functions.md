@@ -45,15 +45,15 @@
 
 支持Windows、Mac os 9
 
-<img src="img/grafeq.png" alt="grafeq" style="zoom:50%;" />
+<img src="functions/grafeq.png" alt="grafeq" style="zoom:50%;" />
 
 #### grapher
 
 Mac自带作图软件，精细程度一般
 
-<img src="img/grapher.png" alt="grapher" style="zoom:20%;" />
+<img src="functions/grapher.png" alt="grapher" style="zoom:20%;" />
 
 可以做3d图像
 
-<img src="img/grapher3d.png" alt="grapher3d" style="zoom:20%;" />
+<img src="functions/grapher3d.png" alt="grapher3d" style="zoom:20%;" />
 
