@@ -3,35 +3,30 @@
 import turtle
 
 
-def koch_curve():
+def koch_curve(length=2, depth=5):
     def recursion(length, depth=0):
         if depth == 0:
             turtle.fd(length)
         else:
-            recursion(length / 3, depth - 1)
+            recursion(length, depth - 1)
             turtle.lt(60)
-            recursion(length / 3, depth - 1)
+            recursion(length, depth - 1)
             turtle.rt(120)
-            recursion(length / 3, depth - 1)
+            recursion(length, depth - 1)
             turtle.lt(60)
-            recursion(length / 3, depth - 1)
-
-    def painter(length, depth):
-        for _ in range(3):
-            recursion(length, depth)
-            turtle.rt(120)
-
-    length = 300
+            recursion(length, depth - 1)
 
     # 设置原点为屏幕中心
     turtle.pu()
-    turtle.goto(-length / 2, length / 2 / 3 ** 0.5)
+    turtle.goto(-length * 3 ** depth / 2, length * 3 ** depth / 2 / 3 ** 0.5)
     turtle.pd()
 
-    painter(length, depth=5)
+    for _ in range(3):
+        recursion(length, depth)
+        turtle.rt(120)
 
 
-def pythagoras_tree():
+def pythagoras_tree(point0=(-50, -200), point1=(50, -200), depth=10):
     def recursion(x0, y0, x1, y1, depth=0):
         if depth > 0:
             dx, dy = x1 - x0, y1 - y0
@@ -53,53 +48,74 @@ def pythagoras_tree():
 
     turtle.color('blue', 'blue')
     turtle.pu()
-    recursion(-50, -200, 50, -200, depth=10)
+    recursion(*point0, *point1, depth=depth)
 
 
-def dragon_curve():
-    """http://blog.sciencenet.cn/blog-677221-601957.html"""
+def dragon_curve(length=2, depth=14):
+    """http://blog.sciencenet.cn/blog-677221-601957.html
 
-    # def recursion(length, depth=0):
-    #     if depth == 0:
-    #         turtle.fd(length)
-    #     else:
-    #         turtle.lt(45)
-    #         recursion(length / 2 ** 0.5, depth - 1)
-    #         turtle.rt(90)
-    #         recursion(length / 2 ** 0.5, depth - 1)
-    #
-    # recursion(length=400, depth=3)
-    def dragon_right(max_len, min_len):
-        '''draw lines favoring right'''
-        # optionally draw this part in red
-        turtle.color('red')
-        if max_len <= min_len:
-            turtle.forward(max_len)
+    main process:
+    2nd recursion: r r l
+    3rd recursion: rrl r rll
+    4th recursion: rrlrrll r rrllrll
+    ......
+
+    right part and left part, it's symmetric"""
+
+    def recursion_right(length, depth):
+        if depth == 0:
+            turtle.fd(length)
         else:
-            max_len /= 2.0
-            # print(max_len)  # test
-            dragon_right(max_len, min_len)
-            turtle.right(90)
-            dragon_left(max_len, min_len)
+            recursion_right(length, depth - 1)
+            turtle.rt(90)
+            recursion_left(length, depth - 1)
 
-    def dragon_left(max_len, min_len):
-        '''draw lines favoring left'''
-        # optionally draw this part in blue
-        turtle.color('blue')
-        if max_len <= min_len:
-            turtle.forward(max_len)
+    def recursion_left(length, depth):
+        if depth == 0:
+            turtle.fd(length)
         else:
-            max_len /= 2.0
-            # print(max_len)  # test
-            dragon_right(max_len, min_len)
-            turtle.left(90)
-            dragon_left(max_len, min_len)
+            recursion_right(length, depth - 1)
+            turtle.lt(90)
+            recursion_left(length, depth - 1)
 
-    def dragon_curve(max_len, min_len, color):
-        dragon_right(max_len, min_len)
+    recursion_right(length, depth)
 
-    max_len = 4000
-    min_len = 30
+
+def sierpinski_triangle(length=0.5, depth=5):
+    def recursion(length, flag=1, depth=0):
+        if depth == 0:
+            turtle.fd(length)
+        else:
+            recursion(length, flag, depth - 1)
+            turn(flag)
+            recursion(length, -flag, depth - 1)
+            turn(flag)
+            recursion(length, flag, depth - 1)
+            turn(-flag)
+            recursion(length, -flag, depth - 1)
+            turn(-flag)
+            recursion(length, flag, depth - 1)
+            turn(-flag)
+            recursion(length, -flag, depth - 1)
+            turn(-flag)
+            recursion(length, flag, depth - 1)
+            turn(flag)
+            recursion(length, -flag, depth - 1)
+            turn(flag)
+            recursion(length, flag, depth - 1)
+
+    def turn(flag):
+        if flag == 1:
+            turtle.lt(60)
+        else:
+            turtle.rt(60)
+
+    # 设置原点为屏幕中心
+    turtle.pu()
+    turtle.goto(-length * 4 ** depth / 2, -length * 4 ** depth / 2 / 3 ** 0.5)
+    turtle.pd()
+
+    recursion(length, 1, depth)
 
 
 def spiral():
@@ -117,7 +133,7 @@ if __name__ == '__main__':
     turtle.speed('fastest')
     turtle.tracer(False)
 
-    dragon_curve()
+    sierpinski_triangle()
 
     turtle.tracer(True)
     turtle.done()
