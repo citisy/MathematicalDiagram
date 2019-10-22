@@ -11,7 +11,7 @@ def heart1():
     paint2d_with_implicit_function(xaxis=(-1.5, 1.5), yaxis=(-1.5, 2),
                                    func=lambda x, y: x ** 2 + (y - abs(x) ** (2 / 3)) ** 2 - 1,
                                    draw_args={'title': 'x^2 + (y - |x|^(2/3))^2) - 1 = 0',
-                                              'save_path': 'img/heart2D_1.png'}
+                                              'save_path': 'functions/heart2D_1.png'}
                                    )
 
 
@@ -21,7 +21,7 @@ def heart2():
     paint2d_with_implicit_function(xaxis=(-1.5, 1.5), yaxis=(-1.5, 1.5),
                                    func=lambda x, y: (x ** 2 + y ** 2 - 1) ** 3 - x ** 2 * y ** 3,
                                    draw_args={'title': '(x^2 + y^2 - 1)^3 - x^2 * y^3 = 0',
-                                              'save_path': 'img/heart2D_2.png'}
+                                              'save_path': 'functions/heart2D_2.png'}
                                    )
 
 
@@ -31,7 +31,7 @@ def heart3():
     paint2d_with_implicit_function(xaxis=(-1.5, 1.5), yaxis=(-1.5, 1.5),
                                    func=lambda x, y: x ** 2 + 2 * (3 / 5 * abs(x) ** (2 / 3) - y) ** 2 - 1,
                                    draw_args={'title': 'x^2 + 2(3/5|x|^(2/3) - y)^2 - 1 = 0',
-                                              'save_path': 'img/heart2D_3.png'}
+                                              'save_path': 'functions/heart2D_3.png'}
                                    )
 
 
@@ -40,7 +40,7 @@ def heart4():
     paint2d_with_implicit_function(xaxis=(-2, 2), yaxis=(-2, 3),
                                    func=lambda x, y: x ** 2 + (y - abs(x) ** (1 / 2)) ** 2 - 3,
                                    draw_args={'title': 'x^2 + (y - sqrt(|x|))^2 - 3 = 0',
-                                              'save_path': 'img/heart2D_4.png'}
+                                              'save_path': 'functions/heart2D_4.png'}
                                    )
 
 
@@ -50,7 +50,7 @@ def heart5():
                                     func=lambda t: (sin(t) * cos(t) * np.log(abs(t)),
                                                     np.sqrt(abs(t)) * cos(t)),
                                     draw_args={'title': 'x = sin(t)cos(t)ln|t|\ny = sqrt(|t|)cos(t)\n-1 <= t <= 1',
-                                               'save_path': 'img/heart2D_5.png',
+                                               'save_path': 'functions/heart2D_5.png',
                                                }
                                     )
 
@@ -61,7 +61,7 @@ def heart6():
                                    func=lambda x, y: 17 * x ** 2 - 16 * abs(x) * y + 17 * y ** 2 + 150 / abs(
                                        5 * x + sin(5 * y)) - 225,
                                    draw_args={'title': '17x^2 - 16|x|y + 17y^2 + 150/|5x + sin(5y)| = 225',
-                                              'save_path': 'img/heart2D_6.png'}
+                                              'save_path': 'functions/heart2D_6.png'}
                                    )
 
 
@@ -73,7 +73,7 @@ def heart7():
                                    steps=2 ** 10,
                                    func=lambda t: 5 * sin(t) ** 7 * np.exp(abs(2 * t)),
                                    draw_args={'title': 'r = 5 * sin(t)^7 * exp(|2t|)',
-                                              'save_path': 'img/heart2D_7.png',
+                                              'save_path': 'functions/heart2D_7.png',
                                               }
                                    )
 
@@ -86,7 +86,7 @@ def heart8():
                                    steps=2 ** 10,
                                    func=lambda t: 1 - sin(t),
                                    draw_args={'title': 'r = 1 - sin(t)',
-                                              'save_path': 'img/heart2D_8.png',
+                                              'save_path': 'functions/heart2D_8.png',
                                               }
                                    )
 
@@ -96,7 +96,7 @@ def equation1():
     paint2d_with_implicit_function(xaxis=(-10, 10), yaxis=(-10, 10),
                                    func=lambda x, y: np.exp(sin(x) + cos(y)) - sin(np.exp(x + y)),
                                    draw_args={'title': 'exp(sin(x) + cos(y)) = sin(exp(x + y))',
-                                              'save_path': 'img/equation1.png',
+                                              'save_path': 'functions/equation1.png',
                                               'figsize': (12, 12)}
                                    )
 
@@ -106,7 +106,7 @@ def equation2():
     paint2d_with_implicit_function(xaxis=(-10, 10), yaxis=(-10, 10),
                                    func=lambda x, y: sin(sin(x) + cos(y)) - cos(sin(x * y) - cos(x)),
                                    draw_args={'title': 'sin(sin(x) + cos(y)) = cos(sin(xy) + cos(x))',
-                                              'save_path': 'img/equation2.png',
+                                              'save_path': 'functions/equation2.png',
                                               'figsize': (12, 12)}
                                    )
 
@@ -116,7 +116,7 @@ def equation3():
     paint2d_with_implicit_function(xaxis=(-10, 10), yaxis=(-10, 10),
                                    func=lambda x, y: sin(x ** 2 + y ** 2) - cos(x * y),
                                    draw_args={'title': 'sin(x^2 + y^2) = cos(xy)',
-                                              'save_path': 'img/equation3.png',
+                                              'save_path': 'functions/equation3.png',
                                               'figsize': (12, 12)}
                                    )
 
@@ -126,7 +126,7 @@ def equation4():
     paint2d_with_implicit_function(xaxis=(-10, 10), yaxis=(-10, 10),
                                    func=lambda x, y: abs(sin(x ** 2 + 2 * x * y)) - sin(x - 2 * y),
                                    draw_args={'title': '|sin(x^2 + 2xy)| = sin(x - 2y)',
-                                              'save_path': 'img/equation4.png',
+                                              'save_path': 'functions/equation4.png',
                                               'figsize': (12, 12)}
                                    )
 
@@ -136,7 +136,7 @@ def equation5():
     paint2d_with_implicit_function(xaxis=(-10, 10), yaxis=(-10, 10),
                                    func=lambda x, y: abs(sin(x ** 2 - y ** 2)) - sin(x + y) - cos(x * y),
                                    draw_args={'title': '|sin(x^2 - y^2)| = sin(x + y) + cos(xy)',
-                                              'save_path': 'img/equation5.png',
+                                              'save_path': 'functions/equation5.png',
                                               'figsize': (12, 12)}
                                    )
 
@@ -150,7 +150,7 @@ def equation6():
                                    #     (x / sin(x)) ** 2 - (y / sin(y) + (x * y) / sin(x * y)) ** 2,
                                    # ],
                                    draw_args={'title': 'x/sin(x) +- y/sin(y) = +-xy/sin(xy)',
-                                              'save_path': 'img/equation6.png',
+                                              'save_path': 'functions/equation6.png',
                                               'figsize': (12, 12)}
                                    )
 
@@ -159,7 +159,7 @@ def equation7():
     paint2d_with_implicit_function(xaxis=(-1.5, 1.5), yaxis=(-1.5, 1.5),
                                    func=lambda x, y: (x ** 2 + y ** 2 - 1) ** 2 - (x * y) ** 2,
                                    draw_args={'title': '(x^2 + y^2 - 1)^2 = (xy)^2',
-                                              'save_path': 'img/equation7.png',
+                                              'save_path': 'functions/equation7.png',
                                               'figsize': (12, 12)}
                                    )
 
@@ -171,7 +171,7 @@ def equation8():
                                    steps=2 ** 12,
                                    func=lambda t: t + 3 * sin(4 * t) - 5 * cos(4 * t),
                                    draw_args={'title': 'r = t + 3sin(4t) - 5cos(4t)',
-                                              'save_path': 'img/equation8.png',
+                                              'save_path': 'functions/equation8.png',
                                               'figsize': (12, 12)}
                                    )
 
@@ -182,7 +182,7 @@ def equation9():
     paint2d_with_implicit_function(xaxis=(-5, 5), yaxis=(-5, 5),
                                    func=lambda x, y: sin(x ** 2 + y ** 2) - cos(x - y),
                                    draw_args={'title': 'sin(x^2 + y^2) = cos(x - y)',
-                                              'save_path': 'img/equation9.png',
+                                              'save_path': 'functions/equation9.png',
                                               'figsize': (12, 12)}
                                    )
 
@@ -194,7 +194,7 @@ def equation10():
                                    func=lambda x, y: sin(x) ** sin(y) + sin(y) ** sin(x) - sin(
                                        x ** 2 + y ** 2),
                                    draw_args={'title': 'sin(x^2 + y^2) = sin(x)^sin(y) + sin(y)^sin(x)',
-                                              'save_path': 'img/equation10.png',
+                                              'save_path': 'functions/equation10.png',
                                               'figsize': (12, 12),
                                               }
                                    )
@@ -208,7 +208,7 @@ def nb():
                                            x ** 3 + x ** 2 - 2 * x) * (y + 2 * x + 2),
                                    draw_args={
                                        'title': '(1 + 2sqrt(-(|y|-1)^2 + 1) - x)(x^3 + x^2 - 2x)(y + 2x + 2) = 0',
-                                       'save_path': 'img/nb.png',
+                                       'save_path': 'functions/nb.png',
                                        'figsize': (12, 12),
                                        'xlim': (-4, 5),
                                        'ylim': (-4, 4)}
@@ -224,7 +224,7 @@ def butterfly():
                                        (2 * t - np.pi) / 24) ** 5,
                                    draw_args={
                                        'title': 'r = 2.7^sin(t) - 2cos(4t) + sin((2t - pi)/24)^5\n-12pi < t < 12pi',
-                                       'save_path': 'img/butterfly.png',
+                                       'save_path': 'functions/butterfly.png',
                                        'figsize': (12, 12),
                                        'color': 'b'}
                                    )
@@ -237,7 +237,7 @@ def yinyang():
                                            r ** 4 - 2 * r ** 2 * cos(2 * t + 2.4) + 0.9) + (0.62 * r) ** 100,
                                    draw_args={
                                        'title': '(cos(t - r) - sin(t))(r^4 - 2r^2cos(2t + 2.4) + 0.9) + (0.62r)^1000 = 0',
-                                       'save_path': 'img/yinyang.png',
+                                       'save_path': 'functions/yinyang.png',
                                        'color': 'black',
                                        'figsize': (12, 12),
                                        'xlim': (-2, 2),
@@ -255,7 +255,7 @@ def bird():
                                                              (x + 2) ** 2 + (y - 2.8) ** 2 - 0.04),
                                    draw_args={
                                        'title': '(1 + 2sqrt(-(|y|-1)^2 + 1) - x)(x^3 + x^2 - 2x)(y + 2x + 2) = 0',
-                                       'save_path': 'img/bird.png',
+                                       'save_path': 'functions/bird.png',
                                        'figsize': (12, 12),
                                        'xlim': (-5, 5),
                                        'ylim': (-5, 5)}
