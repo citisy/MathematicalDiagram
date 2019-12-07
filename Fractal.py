@@ -52,6 +52,8 @@ def pythagoras_tree(p0=(-50, -200), p1=(50, -200), depth=10):
             recursion(x4, y4, x2, y2, depth - 1)
 
     t = turtle.Turtle()
+    t.hideturtle()
+
     t.color('blue', 'blue')
     t.penup()
     recursion(*p0, *p1, depth=depth)
@@ -154,12 +156,12 @@ def spiral():
 
 
 if __name__ == '__main__':
-    # turtle.tracer(False)
-    #
-    # leaf()
-    #
-    # turtle.tracer(True)
-    # turtle.done()
+    turtle.tracer(False)
 
-    depth = 6
-    leaf(depth=depth, save_path='fractal/leaf%d.png' % depth)
+    pythagoras_tree()
+
+    turtle.tracer(True)
+    turtle.done()
+
+    # depth = 6
+    # leaf(depth=depth, save_path='fractal/leaf%d.png' % depth)

@@ -5,7 +5,7 @@
 |                      |                          第1次迭代                           |                          第2次迭代                           |                          第n次迭代                           |
 | :------------------: | :----------------------------------------------------------: | :----------------------------------------------------------: | :----------------------------------------------------------: |
 |      koch_curve      |           ![koch_curve1](fractal/koch_curve1.png)            |           ![koch_curve2](fractal/koch_curve2.png)            |           ![koch_curve5](fractal/koch_curve5.png)            |
-|   pythagoras_tree    |      ![pythagoras_tree1](fractal/pythagoras_tree1.jpg)       |      ![pythagoras_tree2](fractal/pythagoras_tree2.jpg)       |     ![pythagoras_tree10](fractal/pythagoras_tree10.jpg)      |
+|   pythagoras_tree    |      ![pythagoras_tree1](fractal/pythagoras_tree1.png)       |      ![pythagoras_tree2](fractal/pythagoras_tree2.png)       |     ![pythagoras_tree10](fractal/pythagoras_tree10.png)      |
 |     dragon_curve     |         ![dragon_curve1](fractal/dragon_curve1.png)          |         ![dragon_curve2](fractal/dragon_curve2.png)          |        ![dragon_curve14](fractal/dragon_curve14.png)         |
 | sierpinski_triangle  |  ![sierpinski_triangle1](fractal/sierpinski_triangle1.png)   |  ![sierpinski_triangle2](fractal/sierpinski_triangle2.png)   |  ![sierpinski_triangle6](fractal/sierpinski_triangle6.png)   |
 | sierpinski_triangle2 | ![sierpinski_triangle2_1](fractal/sierpinski_triangle2_1.png) | ![sierpinski_triangle2_2](fractal/sierpinski_triangle2_2.png) | ![sierpinski_triangle2_5](fractal/sierpinski_triangle2_5.png) |
