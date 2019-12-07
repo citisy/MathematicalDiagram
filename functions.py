@@ -1,8 +1,4 @@
 from utils import *
-from numpy import sin, cos
-
-
-# from sympy import sin, cos
 
 
 def heart1():
@@ -69,7 +65,7 @@ def heart7():
     """http://www.mathematische-basteleien.de/heart.htm"""
 
     paint2d_with_explicit_function(axis_type=polar,
-                                   taxis_list=((-np.pi, -np.pi / 2), (np.pi / 2, np.pi)),
+                                   taxis_list=((-pi, -pi / 2), (pi / 2, pi)),
                                    steps=2 ** 10,
                                    func=lambda t: 5 * sin(t) ** 7 * np.exp(abs(2 * t)),
                                    draw_args={'title': 'r = 5 * sin(t)^7 * exp(|2t|)',
@@ -82,11 +78,21 @@ def heart8():
     """http://www.mathematische-basteleien.de/heart.htm"""
 
     paint2d_with_explicit_function(axis_type=polar,
-                                   taxis_list=((-np.pi * 2, np.pi * 2),),
+                                   taxis_list=((-pi * 2, pi * 2),),
                                    steps=2 ** 10,
                                    func=lambda t: 1 - sin(t),
                                    draw_args={'title': 'r = 1 - sin(t)',
                                               'save_path': 'functions/heart2D_8.png',
+                                              }
+                                   )
+
+
+def heart9():
+    paint2d_with_explicit_function(xaxis_list=((-3.3 ** 0.5, 3.3 ** 0.5),),
+                                   steps=2 ** 10,
+                                   func=lambda x: abs(x) ** (2 / 3) + 0.9 * (3.3 - x ** 2) ** 0.5 * sin(30 * pi * x),
+                                   draw_args={'title': 'y = |x|^(2/3) + 0.9(3.3 - x^2)^0.5 * sin(b * pi * x)\nb=30',
+                                              'save_path': 'functions/heart2D_9.png',
                                               }
                                    )
 
@@ -167,7 +173,7 @@ def equation7():
 def equation8():
     """https://www.zhihu.com/question/20603242"""
 
-    paint2d_with_explicit_function(axis_type=polar, taxis_list=((-8 * np.pi, 8 * np.pi),),
+    paint2d_with_explicit_function(axis_type=polar, taxis_list=((-8 * pi, 8 * pi),),
                                    steps=2 ** 12,
                                    func=lambda t: t + 3 * sin(4 * t) - 5 * cos(4 * t),
                                    draw_args={'title': 'r = t + 3sin(4t) - 5cos(4t)',
@@ -190,7 +196,7 @@ def equation9():
 def equation10():
     """https://www.zhihu.com/question/20603242"""
 
-    paint2d_with_implicit_function(xaxis=(-4 * np.pi, 4 * np.pi), yaxis=(-4 * np.pi, 4 * np.pi),
+    paint2d_with_implicit_function(xaxis=(-4 * pi, 4 * pi), yaxis=(-4 * pi, 4 * pi),
                                    func=lambda x, y: sin(x) ** sin(y) + sin(y) ** sin(x) - sin(
                                        x ** 2 + y ** 2),
                                    draw_args={'title': 'sin(x^2 + y^2) = sin(x)^sin(y) + sin(y)^sin(x)',
@@ -198,6 +204,18 @@ def equation10():
                                               'figsize': (12, 12),
                                               }
                                    )
+
+
+def equation11():
+    """http://www.matrix67.com/blog/archives/6947"""
+    paint2d_with_transform_function(taxis_list=((-pi, pi),), steps=2 ** 10,
+                                    func=lambda t: (sin(13 * t),
+                                                    sin(18 * t)),
+                                    draw_args={'title': 'x = sin(13t)\ny = sin(18t)\n-1 <= t <= 1',
+                                               'save_path': 'functions/equation11.png',
+                                               'figsize': (12, 12)
+                                               }
+                                    )
 
 
 def nb():
@@ -218,10 +236,10 @@ def nb():
 def butterfly():
     """https://www.zhihu.com/question/20603242"""
 
-    paint2d_with_explicit_function(axis_type=polar, taxis_list=((-12 * np.pi, 12 * np.pi),),
+    paint2d_with_explicit_function(axis_type=polar, taxis_list=((-12 * pi, 12 * pi),),
                                    steps=2 ** 12,
                                    func=lambda t: 2.7 ** sin(t) - 2 * cos(4 * t) + sin(
-                                       (2 * t - np.pi) / 24) ** 5,
+                                       (2 * t - pi) / 24) ** 5,
                                    draw_args={
                                        'title': 'r = 2.7^sin(t) - 2cos(4t) + sin((2t - pi)/24)^5\n-12pi < t < 12pi',
                                        'save_path': 'functions/butterfly.png',
@@ -232,7 +250,7 @@ def butterfly():
 
 def yinyang():
     """http://www.matrix67.com/blog/archives/4447"""
-    paint2d_with_implicit_function(axis_type=polar, taxis=(0, 2 * np.pi), raxis=(0, 4),
+    paint2d_with_implicit_function(axis_type=polar, taxis=(0, 2 * pi), raxis=(0, 4),
                                    func=lambda t, r: (cos(t - r) - sin(t)) * (
                                            r ** 4 - 2 * r ** 2 * cos(2 * t + 2.4) + 0.9) + (0.62 * r) ** 100,
                                    draw_args={
@@ -262,5 +280,19 @@ def bird():
                                    )
 
 
+# def heart_3d():
+#     from matplotlib import cm
+#     fig = plt.figure()
+#     ax = fig.gca(projection='3d')
+#     [x, t] = np.meshgrid(np.array(range(25)) / 24.0, np.arange(0, 575.5, 0.5) / 575 * 17 * np.pi - 2 * np.pi)
+#     p = (np.pi / 2) * np.exp(-t / (8 * np.pi))
+#     u = 1 - (1 - np.mod(3.6 * t, 2 * np.pi) / np.pi) ** 4 / 2
+#     y = 2 * (x ** 2 - x) ** 2 * np.sin(p)
+#     r = u * (x * np.sin(p) + y * np.cos(p))
+#     surf = ax.plot_surface(r * np.cos(t), r * np.sin(t), u * (x * np.cos(p) - y * np.sin(p)), rstride=1, cstride=1,
+#                            cmap=cm.gist_rainbow_r, linewidth=0, antialiased=True)
+#     plt.show()
+
+
 if __name__ == '__main__':
-    yinyang()
+    heart9()

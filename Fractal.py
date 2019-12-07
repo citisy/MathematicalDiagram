@@ -1,57 +1,18 @@
-"""http://www.matrix67.com/blog/archives/6231#more-6231"""
-
+from utils import *
 import turtle
 
 
-def koch_curve(length=2, depth=5):
-    def recursion(length, depth=0):
-        if depth == 0:
-            turtle.fd(length)
-        else:
-            recursion(length, depth - 1)
-            turtle.lt(60)
-            recursion(length, depth - 1)
-            turtle.rt(120)
-            recursion(length, depth - 1)
-            turtle.lt(60)
-            recursion(length, depth - 1)
+def koch_curve(length=2, depth=5, save_path=None):
+    """http://www.matrix67.com/blog/archives/6231#more-6231"""
 
-    # 设置原点为屏幕中心
-    turtle.pu()
-    turtle.goto(-length * 3 ** depth / 2, length * 3 ** depth / 2 / 3 ** 0.5)
-    turtle.pd()
+    angle = 60
+    start_point = (-length * 3 ** depth / 2, length * 3 ** depth / 2 / 3 ** 0.5)
 
-    for _ in range(3):
-        recursion(length, depth)
-        turtle.rt(120)
+    paint_fractal({'s': 'f++f++f', 'f': 'f-f++f-f'},
+                  angle, length, depth, start_point=start_point, save_path=save_path)
 
 
-def pythagoras_tree(point0=(-50, -200), point1=(50, -200), depth=10):
-    def recursion(x0, y0, x1, y1, depth=0):
-        if depth > 0:
-            dx, dy = x1 - x0, y1 - y0
-            x2, y2 = x1 - dy, y1 + dx
-            x3, y3 = x0 - dy, y0 + dx
-            x4, y4 = x3 + (dx - dy) / 2, y3 + (dx + dy) / 2
-
-            turtle.goto(x0, y0)
-            turtle.begin_fill()
-            turtle.pd()  # 画笔放下
-
-            for x, y in ((x1, y1), (x2, y2), (x3, y3), (x0, y0)):
-                turtle.goto(x, y)
-
-            turtle.pu()  # 画笔提起
-            turtle.end_fill()
-            recursion(x3, y3, x4, y4, depth - 1)
-            recursion(x4, y4, x2, y2, depth - 1)
-
-    turtle.color('blue', 'blue')
-    turtle.pu()
-    recursion(*point0, *point1, depth=depth)
-
-
-def dragon_curve(length=2, depth=14):
+def dragon_curve(length=2, depth=14, save_path=None):
     """http://blog.sciencenet.cn/blog-677221-601957.html
 
     main process:
@@ -62,78 +23,143 @@ def dragon_curve(length=2, depth=14):
 
     right part and left part, it's symmetric"""
 
-    def recursion_right(length, depth):
+    angle = 90
+    start_point = ()
+    paint_fractal({'s': 'fr', 'r': 'r+lf+', 'l': '-fr-l'},
+                  angle, length, depth, save_path=save_path)
+
+
+def pythagoras_tree(p0=(-50, -200), p1=(50, -200), depth=10):
+    """p0, p1: left bottom point and right bottom point of square"""
+
+    def recursion(x0, y0, x1, y1, depth=0):
+        if depth > 0:
+            dx, dy = x1 - x0, y1 - y0
+            x2, y2 = x1 - dy, y1 + dx
+            x3, y3 = x0 - dy, y0 + dx
+            x4, y4 = x3 + (dx - dy) / 2, y3 + (dx + dy) / 2
+
+            t.goto(x0, y0)
+            t.begin_fill()
+            t.pendown()  # 画笔放下
+
+            for x, y in ((x1, y1), (x2, y2), (x3, y3), (x0, y0)):  # 正方形的四个顶点
+                t.goto(x, y)
+
+            t.penup()  # 画笔提起
+            t.end_fill()
+            recursion(x3, y3, x4, y4, depth - 1)
+            recursion(x4, y4, x2, y2, depth - 1)
+
+    t = turtle.Turtle()
+    t.color('blue', 'blue')
+    t.penup()
+    recursion(*p0, *p1, depth=depth)
+
+
+def sierpinski_triangle(p0=(-250, -200), p1=(250, -200), depth=6):
+    """p0, p1: left bottom point and right bottom point of triangle"""
+
+    def recursion(p0, p1, p2, depth=0):
         if depth == 0:
-            turtle.fd(length)
+            t.penup()
+            t.goto(p0)
+            t.pendown()
+            t.begin_fill()
+            for p in (p1, p2, p0):
+                t.goto(p)
+            t.end_fill()
         else:
-            recursion_right(length, depth - 1)
-            turtle.rt(90)
-            recursion_left(length, depth - 1)
+            (x0, y0), (x1, y1), (x2, y2) = p0, p1, p2
+            p01 = ((x0 + x1) / 2, (y0 + y1) / 2)
+            p02 = ((x0 + x2) / 2, (y0 + y2) / 2)
+            p12 = ((x1 + x2) / 2, (y1 + y2) / 2)
 
-    def recursion_left(length, depth):
-        if depth == 0:
-            turtle.fd(length)
-        else:
-            recursion_right(length, depth - 1)
-            turtle.lt(90)
-            recursion_left(length, depth - 1)
+            recursion(p0, p01, p02, depth - 1)
+            recursion(p1, p01, p12, depth - 1)
+            recursion(p2, p02, p12, depth - 1)
 
-    recursion_right(length, depth)
+    (x0, y0), (x1, y1) = p0, p1
+    length = ((x1 - x0) ** 2 + (y1 - y0) ** 2) ** 0.5
+    t = np.pi / 3
+    cost, sint = abs(x1 - x0) / length, abs(y1 - y0) / length
+    sint_, cost_ = sin(t) * cost - cos(t) * sint, cos(t) * cost + sin(t) * sint
+    p2 = (x0 + length * cost_, y0 + length * sint_)
+
+    t = turtle.Turtle()
+    t.penup()
+    t.goto(p0)
+    t.pendown()
+
+    for p in (p1, p2, p0):
+        t.goto(p)
+
+    t.color('blue', 'blue')
+    recursion(p0, p1, p2, depth=depth)
 
 
-def sierpinski_triangle(length=0.5, depth=5):
-    def recursion(length, flag=1, depth=0):
-        if depth == 0:
-            turtle.fd(length)
-        else:
-            recursion(length, flag, depth - 1)
-            turn(flag)
-            recursion(length, -flag, depth - 1)
-            turn(flag)
-            recursion(length, flag, depth - 1)
-            turn(-flag)
-            recursion(length, -flag, depth - 1)
-            turn(-flag)
-            recursion(length, flag, depth - 1)
-            turn(-flag)
-            recursion(length, -flag, depth - 1)
-            turn(-flag)
-            recursion(length, flag, depth - 1)
-            turn(flag)
-            recursion(length, -flag, depth - 1)
-            turn(flag)
-            recursion(length, flag, depth - 1)
+def sierpinski_triangle2(length=0.5, depth=5, save_path=None):
+    angle = 60
+    start_point = (-length * 4 ** depth / 2, -length * 4 ** depth / 2 / 3 ** 0.5)
+    paint_fractal({'s': 'F', 'F': 'F-f-F+f+F+f+F-f-F', 'f': 'f+F+f-F-f-F-f+F+f'},
+                  angle, length, depth, start_point=start_point, save_path=save_path)
 
-    def turn(flag):
-        if flag == 1:
-            turtle.lt(60)
-        else:
-            turtle.rt(60)
 
-    # 设置原点为屏幕中心
-    turtle.pu()
-    turtle.goto(-length * 4 ** depth / 2, -length * 4 ** depth / 2 / 3 ** 0.5)
-    turtle.pd()
+def sierpinski_triangle3(length=2, depth=7, save_path=None):
+    angle = 60
+    start_point = ()
+    paint_fractal({'s': 'f', 'f': 'F-f-F', 'F': 'f+F+f'},
+                  angle, length, depth, save_path=save_path)
 
-    recursion(length, 1, depth)
+
+def sierpinski(length=5, depth=10, save_path=None):
+    angle = 45
+    strat_point = ()
+    paint_fractal({'s': 'l--f--l--f', 'l': '+r-f-r+', 'r': '-l+f+l-'},
+                  angle, length, depth, save_path=save_path)
+
+
+def lvey_c(length=2, depth=14, save_path=None):
+    """http://www.matrix67.com/blog/archives/6231#more-6231"""
+
+    angle = 45
+    start_point = (-length * 2 ** (depth / 2 - 1), length * 2 ** (depth / 2 - 2))
+    paint_fractal({'s': 'f', 'f': '+f--f+'},
+                  angle, length, depth, start_point=start_point, save_path=save_path)
+
+
+def hilbert(length=10, depth=5, save_path=None):
+    angle = 90
+    strat_point = ()
+    paint_fractal({'s': 'r', 'r': '-lf+rfr+fl-', 'l': '+rf-lfl-fr+'},
+                  angle, length, depth, save_path=save_path)
+
+
+def leaf(length=2, depth=6, save_path=None):
+    angle = 25
+    strat_point = ()
+    paint_fractal({'s': 'x', 'x': 'f-[[x]+x]+f[+fx]-x', 'f': 'ff'},
+                  angle, length, depth, start_angle=-45, save_path=save_path)
 
 
 def spiral():
+    t = turtle.Turtle()
     turtle.bgcolor('black')
     colors = ['red', 'yellow', 'purple', 'blue']
 
     for x in range(400):
-        turtle.forward(2 * x)
-        turtle.color(colors[x % 4])
-        turtle.left(91)
+        t.forward(2 * x)
+        t.color(colors[x % 4])
+        t.left(91)
 
 
 if __name__ == '__main__':
-    turtle.ht()
-    turtle.speed('fastest')
-    turtle.tracer(False)
+    # turtle.tracer(False)
+    #
+    # leaf()
+    #
+    # turtle.tracer(True)
+    # turtle.done()
 
-    sierpinski_triangle()
-
-    turtle.tracer(True)
-    turtle.done()
+    depth = 6
+    leaf(depth=depth, save_path='fractal/leaf%d.png' % depth)

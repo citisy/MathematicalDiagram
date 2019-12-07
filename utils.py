@@ -1,4 +1,6 @@
 import numpy as np
+from numpy import sin, cos, pi
+# from sympy import sin, cos
 import matplotlib.pyplot as plt
 from mpl_toolkits.mplot3d import Axes3D
 from tqdm import tqdm
@@ -18,40 +20,40 @@ def draw(draw_args=dict()):
     plt.show()
 
 
-def recursion(start_xx, start_yy, start_set, batch_steps, steps, eps, func):
-    step_width = (start_xx[1] - start_xx[0], start_yy[1] - start_yy[0])
-    result = np.zeros((steps * batch_steps, steps * batch_steps), dtype=np.int8)
-
-    for idn in tqdm(start_set):
-        idx, idy = idn[0], idn[1]
-
-        xx = np.linspace(start_xx[idx], start_xx[idx] + step_width[0], batch_steps)
-        yy = np.linspace(start_yy[idy], start_yy[idy] + step_width[1], batch_steps)
-
-        for i, x in enumerate(xx):
-            for j, y in enumerate(yy):
-                r = func(x, y)
-                if type(r) is list:
-                    r = any([abs(_) < eps for _ in r])
-                elif type(r) is np.float64:
-                    r = abs(r) < eps
-
-                if r:
-                    result[idx * 2 + i][idy * 2 + j] = 1
-
-    border_set = set()
-    index = np.where(result == 1)
-    for a in range(index[0].size):
-        border_set.add(tuple([index[0][a], index[1][a]]))
-
-    return border_set
-
-
 def paint2d_with_implicit_function2(xaxis=None, yaxis=None,
                                     axis_type=normal, taxis=None, raxis=None,
                                     steps=2 ** 5,
                                     func=None, draw_args=dict(), **kwargs):
     """二分描点"""
+
+    def recursion(start_xx, start_yy, start_set, batch_steps, steps, eps, func):
+        step_width = (start_xx[1] - start_xx[0], start_yy[1] - start_yy[0])
+        result = np.zeros((steps * batch_steps, steps * batch_steps), dtype=np.int8)
+
+        for idn in tqdm(start_set):
+            idx, idy = idn[0], idn[1]
+
+            xx = np.linspace(start_xx[idx], start_xx[idx] + step_width[0], batch_steps)
+            yy = np.linspace(start_yy[idy], start_yy[idy] + step_width[1], batch_steps)
+
+            for i, x in enumerate(xx):
+                for j, y in enumerate(yy):
+                    r = func(x, y)
+                    if type(r) is list:
+                        r = any([abs(_) < eps for _ in r])
+                    elif type(r) is np.float64:
+                        r = abs(r) < eps
+
+                    if r:
+                        result[idx * 2 + i][idy * 2 + j] = 1
+
+        border_set = set()
+        index = np.where(result == 1)
+        for a in range(index[0].size):
+            border_set.add(tuple([index[0][a], index[1][a]]))
+
+        return border_set
+
     if axis_type == polar:
         axis1, axis2 = taxis, raxis
     else:
@@ -170,25 +172,123 @@ def paint2d_with_transform_function(taxis_list=None, steps=2 ** 10,
     draw(draw_args)
 
 
-def paint3d(xaxis=(-1, 1), yaxis=(-1, 1), zaxis=(-1, 1), steps=1000, eps=1e-3):
-    """http://www.matrix67.com/blog/archives/223"""
-    # a = np.linspace(*xaxis, steps)
-    # b = np.linspace(*yaxis, steps)
-    # zs = np.zeros((b.size, a.size)) - 2
-    xs, ys, zs = [], [], []
-    for z in tqdm(np.linspace(*zaxis, steps)):
-        for i, x in enumerate(np.linspace(*xaxis, steps)):
-            for j, y in enumerate(np.linspace(*yaxis, steps)):
-                if abs((x ** 2 + 9 / 4 * y ** 2 + z ** 2 - 1) ** 3
-                       - x ** 2 * z ** 3 - 9 / 80 * y ** 2 * z ** 3) < eps:
-                    xs.append(x)
-                    ys.append(y)
-                    zs.append(z)
-                    # zs[j][i] = z
+# def paint3d(xaxis=(-1, 1), yaxis=(-1, 1), zaxis=(-1, 1), steps=1000, eps=1e-3):
+#     """todo: 待完成"""
+#     # a = np.linspace(*xaxis, steps)
+#     # b = np.linspace(*yaxis, steps)
+#     # zs = np.zeros((b.size, a.size)) - 2
+#     xs, ys, zs = [], [], []
+#     for z in tqdm(np.linspace(*zaxis, steps)):
+#         for i, x in enumerate(np.linspace(*xaxis, steps)):
+#             for j, y in enumerate(np.linspace(*yaxis, steps)):
+#                 if abs((x ** 2 + 9 / 4 * y ** 2 + z ** 2 - 1) ** 3
+#                        - x ** 2 * z ** 3 - 9 / 80 * y ** 2 * z ** 3) < eps:
+#                     xs.append(x)
+#                     ys.append(y)
+#                     zs.append(z)
+#                     # zs[j][i] = z
+#
+#     # xs, ys = np.meshgrid(a, b)
+#     fig2, _ = plt.subplots()
+#     ax2 = Axes3D(fig2)
+#     ax2.scatter(xs, ys, zs, c='red', s=1, marker=',')
+#     # ax2.plot_surface(xs, ys, zs, cmap='rainbow')
+#     plt.show()
 
-    # xs, ys = np.meshgrid(a, b)
-    fig2, _ = plt.subplots()
-    ax2 = Axes3D(fig2)
-    ax2.scatter(xs, ys, zs, c='red', s=1, marker=',')
-    # ax2.plot_surface(xs, ys, zs, cmap='rainbow')
+
+def paint_fractal_with_turtle(rule, angle, length, depth, t=None,
+                              start_point=None, start_angle=None, **kwargs):
+    import turtle
+
+    path = rule['s']
+
+    for i in range(depth):
+        current_path = []
+        for p in path:
+            if p in rule:
+                current_path.append(rule[p])
+            else:
+                current_path.append(p)
+        path = "".join(current_path)
+
+    if t is None:
+        t = turtle.Turtle()
+
+    t.hideturtle()
+    t.speed('fastest')
+
+    if start_point is not None:
+        t.penup()
+        t.goto(start_point)
+        t.pendown()
+
+    if start_angle is not None:
+        t.penup()
+        t.setheading(start_angle)
+        t.pendown()
+
+    cache = []
+    for p in path:
+        if p in 'fF':
+            t.forward(length)
+        elif p == '-':
+            t.left(angle)
+        elif p == '+':
+            t.right(angle)
+        elif p == '[':
+            cache.append((t.pos(), t.heading()))
+        elif p == ']':
+            cache_p, cache_a = cache.pop(-1)
+            t.penup()
+            t.goto(cache_p)
+            t.setheading(cache_a)
+            t.pendown()
+
+
+def paint_fractal(rule, angle, length, depth,
+                  start_angle=None, save_path=None, **kwargs):
+    import matplotlib.collections as plc
+    path = rule['s']
+
+    for i in range(depth):
+        current_path = []
+        for p in path:
+            if p in rule:
+                current_path.append(rule[p])
+            else:
+                current_path.append(p)
+        path = "".join(current_path)
+
+    p = (0.0, 0.0)
+    start_angle = start_angle or 0
+    lines = []
+    stack = []
+    for c in path:
+        if c in "Ff":
+            r = start_angle * pi / 180
+            t = p[0] + length * cos(r), p[1] + length * sin(r)
+            lines.append(((p[0], p[1]), (t[0], t[1])))
+            p = t
+        elif c == "+":
+            start_angle += angle
+        elif c == "-":
+            start_angle -= angle
+        elif c == "[":
+            stack.append((p, start_angle))
+        elif c == "]":
+            p, start_angle = stack.pop(-1)
+
+    fig, ax = plt.subplots()
+    fig.patch.set_facecolor("papayawhip")
+
+    lc = plc.LineCollection(lines)
+    ax.add_collection(lc, autolim=True)
+    ax.axis("equal")
+    ax.set_axis_off()
+    ax.set_xlim(ax.dataLim.xmin, ax.dataLim.xmax)
+    ax.invert_yaxis()
+
+    if save_path is not None:
+        fig.savefig(save_path, facecolor=fig.get_facecolor())
+
     plt.show()
