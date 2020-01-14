@@ -1,4 +1,26 @@
-### 分形图案
+### 混沌分形图案
+
+#### mandelbrot集
+
+|  ![mandelbrot_set](fractal/mandelbrot_set.png)mandelbrot集   | ![elephant_valley](fractal/elephant_valley.png)mandelbrot集（象谷） |
+| :----------------------------------------------------------: | :----------------------------------------------------------: |
+| ![triple_spiral_valley](fractal/triple_spiral_valley.png)mandelbrot集（三重螺旋） | ![seahorse_valley](fractal/seahorse_valley.png)mandelbrot集（海马谷） |
+
+
+
+#### julia集
+
+![julia_set](fractal/julia_set.gif)
+
+#### logistic投射
+
+![logistic](fractal/logistic.png)
+
+#### martin迭代
+
+![martin](fractal/martin.png)
+
+### 几何分形图案
 
 
 
