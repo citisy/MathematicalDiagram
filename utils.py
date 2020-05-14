@@ -9,22 +9,68 @@ normal = 0
 polar = 1
 
 
-def draw(draw_args=dict()):
+def painter(ax, fig, draw_args=dict()):
     plt.xlim(*draw_args.get('xlim', (None, None)))
     plt.ylim(*draw_args.get('ylim', (None, None)))
     plt.title(draw_args.get('title', ''))
 
+    ax.set_axis_off()
+    fig.set_facecolor('papayawhip')
+    ax.set_facecolor('papayawhip')
+
     if draw_args.get('save_path', None) is not None:
-        plt.savefig(draw_args.get('save_path'))
+        plt.savefig(draw_args.get('save_path'), facecolor=fig.get_facecolor())
 
     plt.show()
 
 
-def paint2d_with_implicit_function2(xaxis=None, yaxis=None,
-                                    axis_type=normal, taxis=None, raxis=None,
-                                    steps=2 ** 5,
-                                    func=None, draw_args=dict(), **kwargs):
-    """二分描点"""
+def implicit_formulae_painter(xaxis=None, yaxis=None,
+                              axis_type=normal, taxis=None, raxis=None,
+                              steps=2 ** 10,
+                              func=None, draw_args=dict()):
+    """f(x, y) = 0
+    2维扩展至3维，做等高线，调用了matplotlib的contour函数"""
+    if axis_type == polar:
+        xaxis, yaxis = taxis, raxis
+
+    x = np.linspace(*xaxis, steps)
+    y = np.linspace(*yaxis, steps)
+    X, Y = np.meshgrid(x, y)
+    Z = func(X, Y)
+
+    if axis_type == polar:
+        X, Y = Y * np.cos(X), Y * np.sin(X)
+
+    fig = plt.figure(figsize=draw_args.get('figsize', None))
+    ax = fig.add_subplot()
+    ax.contour(X, Y, Z, 0, colors=draw_args.get('color', 'r'))
+    painter(ax, fig, draw_args)
+
+
+def implicit_formulae_painter2(xaxis=None, yaxis=None,
+                               axis_type=normal, taxis=None, raxis=None,
+                               steps=2 ** 10,
+                               func=None, draw_args=dict()):
+    """f(x, y) = 0
+    隐函数求解，调用了sympy的plot_implicit"""
+    from sympy import symbols, plot_implicit
+
+    x, y = symbols('x y')
+    p = plot_implicit(func(x, y), (x, *xaxis), (y, *yaxis),
+                      points=steps, line_color=draw_args.get('color', 'r'), show=False,
+                      xlim=draw_args.get('xlim', (None, None)), ylim=draw_args.get('ylim', (None, None)),
+                      title=draw_args.get('title', ''))
+
+    if draw_args.get('save_path', None) is not None:
+        p.save(draw_args.get('save_path'))
+
+    p.show()
+
+
+def implicit_formulae_painter3(xaxis=None, yaxis=None, axis_type=normal, taxis=None, raxis=None, steps=2 ** 5,
+                               func=None, draw_args=dict(), **kwargs):
+    """f(x, y) = 0
+    todo: 二分描点，部分算法尚未完成"""
 
     def recursion(start_xx, start_yy, start_set, batch_steps, steps, eps, func):
         step_width = (start_xx[1] - start_xx[0], start_yy[1] - start_yy[0])
@@ -90,53 +136,16 @@ def paint2d_with_implicit_function2(xaxis=None, yaxis=None,
             xs.append(x)
             ys.append(y)
 
-    plt.figure(figsize=draw_args.get('figsize', None))
-    plt.scatter(xs, ys, s=1, c=draw_args.get('color', 'r'), marker=',')
-    draw(draw_args)
+    fig = plt.figure(figsize=draw_args.get('figsize', None))
+    ax = fig.add_subplot()
+
+    ax.scatter(xs, ys, s=1, c=draw_args.get('color', 'r'), marker=',')
+    painter(ax, fig, draw_args)
 
 
-def paint2d_with_implicit_function(xaxis=None, yaxis=None,
-                                   axis_type=normal, taxis=None, raxis=None,
-                                   steps=2 ** 10,
-                                   func=None, draw_args=dict()):
-    """2维扩展至3维，做等高线"""
-    if axis_type == polar:
-        xaxis, yaxis = taxis, raxis
-
-    x = np.linspace(*xaxis, steps)
-    y = np.linspace(*yaxis, steps)
-    X, Y = np.meshgrid(x, y)
-    Z = func(X, Y)
-
-    if axis_type == polar:
-        X, Y = Y * np.cos(X), Y * np.sin(X)
-
-    plt.figure(figsize=draw_args.get('figsize', None))
-    plt.contour(X, Y, Z, 0, colors=draw_args.get('color', 'r'))
-    draw(draw_args)
-
-
-def paint2d_with_implicit_function3(xaxis=None, yaxis=None,
-                                    axis_type=normal, taxis=None, raxis=None,
-                                    steps=2 ** 10,
-                                    func=None, draw_args=dict()):
-    """调包作图"""
-    from sympy import symbols, plot_implicit
-
-    x, y = symbols('x y')
-    p = plot_implicit(func(x, y), (x, *xaxis), (y, *yaxis),
-                      points=steps, line_color=draw_args.get('color', 'r'), show=False,
-                      xlim=draw_args.get('xlim', (None, None)), ylim=draw_args.get('ylim', (None, None)),
-                      title=draw_args.get('title', ''))
-
-    if draw_args.get('save_path', None) is not None:
-        p.save(draw_args.get('save_path'))
-
-    p.show()
-
-
-def paint2d_with_explicit_function(xaxis_list=None, axis_type=normal, taxis_list=None,
-                                   steps=2 ** 10, func=None, draw_args=dict()):
+def explicit_formulae_painter(xaxis_list=None, axis_type=normal, taxis_list=None,
+                              steps=2 ** 10, func=None, draw_args=dict()):
+    """y = f(x)"""
     if axis_type == polar:
         axis_list = taxis_list
     else:
@@ -153,51 +162,84 @@ def paint2d_with_explicit_function(xaxis_list=None, axis_type=normal, taxis_list
                 xs.append(x)
                 ys.append(y)
 
-    plt.figure(figsize=draw_args.get('figsize', None))
-    plt.plot(xs, ys, c=draw_args.get('color', 'r'))
-    draw(draw_args)
+    fig = plt.figure(figsize=draw_args.get('figsize', None))
+    ax = fig.add_subplot()
+
+    ax.plot(xs, ys, c=draw_args.get('color', 'r'))
+
+    painter(ax, fig, draw_args)
 
 
-def paint2d_with_transform_function(taxis_list=None, steps=2 ** 10,
-                                    func=None, draw_args=dict()):
+def transform_formulae_painter(taxis_list=None, axis_type=normal, steps=2 ** 10,
+                               func=None, draw_args=dict()):
+    """x = f(t)
+       y = f(t)"""
     xs, ys = [], []
     for taxis in taxis_list:
         for t in tqdm(np.linspace(*taxis, steps)):
             x, y = func(t)
-            xs.append(x)
-            ys.append(y)
+            if axis_type == polar:
+                xs.append(y * np.cos(x))
+                ys.append(y * np.sin(x))
+            else:
+                xs.append(x)
+                ys.append(y)
 
-    plt.figure(figsize=draw_args.get('figsize', None))
-    plt.plot(xs, ys, c=draw_args.get('color', 'r'))
-    draw(draw_args)
+    fig = plt.figure(figsize=draw_args.get('figsize', None))
+    ax = fig.add_subplot()
 
+    ax.plot(xs, ys, c=draw_args.get('color', 'r'))
 
-# def paint3d(xaxis=(-1, 1), yaxis=(-1, 1), zaxis=(-1, 1), steps=1000, eps=1e-3):
-#     """todo: 待完成"""
-#     # a = np.linspace(*xaxis, steps)
-#     # b = np.linspace(*yaxis, steps)
-#     # zs = np.zeros((b.size, a.size)) - 2
-#     xs, ys, zs = [], [], []
-#     for z in tqdm(np.linspace(*zaxis, steps)):
-#         for i, x in enumerate(np.linspace(*xaxis, steps)):
-#             for j, y in enumerate(np.linspace(*yaxis, steps)):
-#                 if abs((x ** 2 + 9 / 4 * y ** 2 + z ** 2 - 1) ** 3
-#                        - x ** 2 * z ** 3 - 9 / 80 * y ** 2 * z ** 3) < eps:
-#                     xs.append(x)
-#                     ys.append(y)
-#                     zs.append(z)
-#                     # zs[j][i] = z
-#
-#     # xs, ys = np.meshgrid(a, b)
-#     fig2, _ = plt.subplots()
-#     ax2 = Axes3D(fig2)
-#     ax2.scatter(xs, ys, zs, c='red', s=1, marker=',')
-#     # ax2.plot_surface(xs, ys, zs, cmap='rainbow')
-#     plt.show()
+    painter(ax, fig, draw_args)
 
 
-def paint_fractal_with_turtle(rule, angle, length, depth, t=None,
-                              start_point=None, start_angle=None, **kwargs):
+def fractal_painter(rule, angle, length, depth, start_angle=None, save_path=None, **kwargs):
+    """几何分形作图"""
+    import matplotlib.collections as collections
+
+    path = rule['s']
+
+    for i in range(depth):
+        current_path = []
+        for p in path:
+            if p in rule:
+                current_path.append(rule[p])
+            else:
+                current_path.append(p)
+        path = "".join(current_path)
+
+    p = (0.0, 0.0)
+    start_angle = start_angle or 0
+    lines = []
+    stack = []
+    for c in path:
+        if c in "Ff":
+            r = start_angle * pi / 180
+            t = p[0] + length * cos(r), p[1] + length * sin(r)
+            lines.append(((p[0], p[1]), (t[0], t[1])))
+            p = t
+        elif c == "+":
+            start_angle += angle
+        elif c == "-":
+            start_angle -= angle
+        elif c == "[":
+            stack.append((p, start_angle))
+        elif c == "]":
+            p, start_angle = stack.pop(-1)
+
+    fig, ax = plt.subplots()
+    fig.set_facecolor("papayawhip")
+
+    lc = collections.LineCollection(lines)
+    ax.add_collection(lc, autolim=True)
+    ax.axis("equal")
+    ax.invert_yaxis()
+
+    painter(ax, fig, draw_args={'save_path': save_path})
+
+
+def fractal_painter_with_turtle(rule, angle, length, depth, t=None, start_point=None, start_angle=None, **kwargs):
+    """调用turtle的分形作图"""
     import turtle
 
     path = rule['s']
@@ -245,50 +287,39 @@ def paint_fractal_with_turtle(rule, angle, length, depth, t=None,
             t.pendown()
 
 
-def paint_fractal(rule, angle, length, depth,
-                  start_angle=None, save_path=None, **kwargs):
-    import matplotlib.collections as plc
-    path = rule['s']
+def chaos_fractal_painter(xs, ys, save_path=None):
+    """混沌分形作图"""
+    fig = plt.figure(figsize=(12, 12))
+    ax = fig.add_subplot()
 
-    for i in range(depth):
-        current_path = []
-        for p in path:
-            if p in rule:
-                current_path.append(rule[p])
-            else:
-                current_path.append(p)
-        path = "".join(current_path)
+    ax.scatter(xs, ys, s=1, marker=',')
 
-    p = (0.0, 0.0)
-    start_angle = start_angle or 0
-    lines = []
-    stack = []
-    for c in path:
-        if c in "Ff":
-            r = start_angle * pi / 180
-            t = p[0] + length * cos(r), p[1] + length * sin(r)
-            lines.append(((p[0], p[1]), (t[0], t[1])))
-            p = t
-        elif c == "+":
-            start_angle += angle
-        elif c == "-":
-            start_angle -= angle
-        elif c == "[":
-            stack.append((p, start_angle))
-        elif c == "]":
-            p, start_angle = stack.pop(-1)
+    painter(ax, fig, draw_args={'save_path': save_path})
 
-    fig, ax = plt.subplots()
-    fig.patch.set_facecolor("papayawhip")
 
-    lc = plc.LineCollection(lines)
-    ax.add_collection(lc, autolim=True)
-    ax.axis("equal")
-    ax.set_axis_off()
-    ax.set_xlim(ax.dataLim.xmin, ax.dataLim.xmax)
-    ax.invert_yaxis()
+def attractor_painter(func, *args, dt=0.001, n_steps=100000, start_xyz=(0.1, 0.1, 0.1),
+                      save_path=None, **kwargs):
+    """吸引子作图"""
+    xs = np.empty(n_steps + 1)
+    ys = np.empty(n_steps + 1)
+    zs = np.empty(n_steps + 1)
 
-    if save_path is not None:
-        fig.savefig(save_path, facecolor=fig.get_facecolor())
+    xs[0], ys[0], zs[0] = start_xyz
 
-    plt.show()
+    for i in range(n_steps):
+        if args:
+            (dx, dy, dz), d = func(xs[i], ys[i], zs[i], *args)
+            args = tuple(args[i] + d[i] for i in range(len(args)))
+        else:
+            dx, dy, dz = func(xs[i], ys[i], zs[i])
+
+        xs[i + 1] = xs[i] + (dx * dt)
+        ys[i + 1] = ys[i] + (dy * dt)
+        zs[i + 1] = zs[i] + (dz * dt)
+
+    fig = plt.figure()
+    ax = fig.add_subplot(projection='3d')
+
+    ax.plot(xs, ys, zs, linewidth=1)
+
+    painter(ax, fig, draw_args={'save_path': save_path})
