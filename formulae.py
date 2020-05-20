@@ -6,7 +6,6 @@ def heart1():
 
     implicit_formulae_painter(xaxis=(-1.5, 1.5), yaxis=(-1.5, 2),
                               func=lambda x, y: x ** 2 + (y - abs(x) ** (2 / 3)) ** 2 - 1, draw_args={
-            'title': r'$x^2 + \left ( y - \sqrt[3] {x ^ 2} \right ) ^ 2 - 1 = 0$',
             'save_path': 'formulae/heart2D_1.png'
         })
 
@@ -84,7 +83,7 @@ def heart7():
     """http://www.mathematische-basteleien.de/heart.htm"""
 
     explicit_formulae_painter(axis_type=polar, taxis_list=((-pi, -pi / 2), (pi / 2, pi)), steps=2 ** 10,
-                              func=lambda t: 5 * sin(t) ** 7 * np.exp(abs(2 * t)), draw_args={
+                              func=lambda t: 5 * sin(t) ** 7 * exp(abs(2 * t)), draw_args={
             'title': r'$r = 5 \sin ^7 (t) e ^{|2t|}$',
             'save_path': 'formulae/heart2D_7.png',
         })
@@ -122,7 +121,7 @@ def equation1():
     """http://www.matrix67.com/blog/archives/4447"""
 
     implicit_formulae_painter(xaxis=(-10, 10), yaxis=(-10, 10),
-                              func=lambda x, y: np.exp(sin(x) + cos(y)) - sin(np.exp(x + y)), draw_args={
+                              func=lambda x, y: exp(sin(x) + cos(y)) - sin(exp(x + y)), draw_args={
             'title': r'$e^{\sin (x) + \cos (y)} = \sin (e^{x + y})$',
             'save_path': 'formulae/equation1.png',
             'figsize': (12, 12)
@@ -317,7 +316,8 @@ def yinyang():
             'color': 'black',
             'figsize': (12, 12),
             'xlim': (-2, 2),
-            'ylim': (-2, 2)})
+            'ylim': (-2, 2)
+        })
 
 
 # yinyang()
@@ -335,7 +335,8 @@ def bird():
             'save_path': 'formulae/bird.png',
             'figsize': (12, 12),
             'xlim': (-5, 5),
-            'ylim': (-5, 5)})
+            'ylim': (-5, 5)
+        })
 
 
 # bird()
@@ -376,17 +377,4 @@ def spiral():
     painter(ax, fig, draw_args={'save_path': 'formulae/spiral.png'})
 
 
-spiral()
-
-# def heart_3d():
-#     from matplotlib import cm
-#     fig = plt.figure()
-#     ax = fig.gca(projection='3d')
-#     [x, t] = np.meshgrid(np.array(range(25)) / 24.0, np.arange(0, 575.5, 0.5) / 575 * 17 * np.pi - 2 * np.pi)
-#     p = (np.pi / 2) * np.exp(-t / (8 * np.pi))
-#     u = 1 - (1 - np.mod(3.6 * t, 2 * np.pi) / np.pi) ** 4 / 2
-#     y = 2 * (x ** 2 - x) ** 2 * np.sin(p)
-#     r = u * (x * np.sin(p) + y * np.cos(p))
-#     surf = ax.plot_surface(r * np.cos(t), r * np.sin(t), u * (x * np.cos(p) - y * np.sin(p)), rstride=1, cstride=1,
-#                            cmap=cm.gist_rainbow_r, linewidth=0, antialiased=True)
-#     plt.show()
+# spiral()

@@ -1,8 +1,10 @@
 import numpy as np
-from numpy import sin, cos, pi
-# from sympy import sin, cos
+from numpy import sin, cos, pi, exp
+# from sympy import sin, cos, pi, exp
 import matplotlib.pyplot as plt
-from mpl_toolkits.mplot3d import Axes3D
+import matplotlib.collections as collections
+import matplotlib.colors as colors
+import mpl_toolkits.mplot3d
 from tqdm import tqdm
 
 normal = 0
@@ -10,13 +12,15 @@ polar = 1
 
 
 def painter(ax, fig, draw_args=dict()):
-    plt.xlim(*draw_args.get('xlim', (None, None)))
-    plt.ylim(*draw_args.get('ylim', (None, None)))
-    plt.title(draw_args.get('title', ''))
+    ax.set_xlim(*draw_args.get('xlim', ax.get_xlim()))
+    ax.set_ylim(*draw_args.get('ylim', ax.get_ylim()))
+    ax.set_title(draw_args.get('title', ''))
 
-    ax.set_axis_off()
-    fig.set_facecolor('papayawhip')
-    ax.set_facecolor('papayawhip')
+    if draw_args.get('axis_off', True):
+        ax.set_axis_off()
+
+    fig.set_facecolor(draw_args.get('facecolor', 'papayawhip'))
+    ax.set_facecolor(draw_args.get('facecolor', 'papayawhip'))
 
     if draw_args.get('save_path', None) is not None:
         plt.savefig(draw_args.get('save_path'), facecolor=fig.get_facecolor())
@@ -35,15 +39,27 @@ def implicit_formulae_painter(xaxis=None, yaxis=None,
 
     x = np.linspace(*xaxis, steps)
     y = np.linspace(*yaxis, steps)
-    X, Y = np.meshgrid(x, y)
-    Z = func(X, Y)
+    xx, yy = np.meshgrid(x, y)
+    zz = func(xx, yy)
 
     if axis_type == polar:
-        X, Y = Y * np.cos(X), Y * np.sin(X)
+        xx, yy = yy * cos(xx), yy * sin(xx)
 
     fig = plt.figure(figsize=draw_args.get('figsize', None))
     ax = fig.add_subplot()
-    ax.contour(X, Y, Z, 0, colors=draw_args.get('color', 'r'))
+    ax.contour(xx, yy, zz, 0, colors=draw_args.get('color', 'r'))
+
+    axins = ax.inset_axes([0.1, 0.1, 0.4, 0.4])
+    axins.contour(xx, yy, zz, 0, colors=draw_args.get('color', 'r'))
+
+    x1, x2, y1, y2 = 5, 6, 1, 2
+    axins.set_xlim(x1, x2)
+    axins.set_ylim(y1, y2)
+    axins.set_xticklabels('')
+    axins.set_yticklabels('')
+
+    ax.indicate_inset_zoom(axins, alpha=1, edgecolor='0')
+
     painter(ax, fig, draw_args)
 
 
@@ -52,11 +68,17 @@ def implicit_formulae_painter2(xaxis=None, yaxis=None,
                                steps=2 ** 10,
                                func=None, draw_args=dict()):
     """f(x, y) = 0
-    隐函数求解，调用了sympy的plot_implicit"""
+    隐函数求解，调用了sympy的plot_implicit函数
+    todo: 极坐标系是图像会出错"""
     from sympy import symbols, plot_implicit
 
+    if axis_type == polar:
+        xaxis, yaxis = taxis, raxis
+
     x, y = symbols('x y')
-    p = plot_implicit(func(x, y), (x, *xaxis), (y, *yaxis),
+    z = func(x, y)
+
+    p = plot_implicit(z, (x, *xaxis), (y, *yaxis),
                       points=steps, line_color=draw_args.get('color', 'r'), show=False,
                       xlim=draw_args.get('xlim', (None, None)), ylim=draw_args.get('ylim', (None, None)),
                       title=draw_args.get('title', ''))
@@ -67,80 +89,120 @@ def implicit_formulae_painter2(xaxis=None, yaxis=None,
     p.show()
 
 
-def implicit_formulae_painter3(xaxis=None, yaxis=None, axis_type=normal, taxis=None, raxis=None, steps=2 ** 5,
+def implicit_formulae_painter3(xaxis=None, yaxis=None,
+                               axis_type=normal, taxis=None, raxis=None,
+                               steps=1000, k=1.,
                                func=None, draw_args=dict(), **kwargs):
     """f(x, y) = 0
-    todo: 二分描点，部分算法尚未完成"""
-
-    def recursion(start_xx, start_yy, start_set, batch_steps, steps, eps, func):
-        step_width = (start_xx[1] - start_xx[0], start_yy[1] - start_yy[0])
-        result = np.zeros((steps * batch_steps, steps * batch_steps), dtype=np.int8)
-
-        for idn in tqdm(start_set):
-            idx, idy = idn[0], idn[1]
-
-            xx = np.linspace(start_xx[idx], start_xx[idx] + step_width[0], batch_steps)
-            yy = np.linspace(start_yy[idy], start_yy[idy] + step_width[1], batch_steps)
-
-            for i, x in enumerate(xx):
-                for j, y in enumerate(yy):
-                    r = func(x, y)
-                    if type(r) is list:
-                        r = any([abs(_) < eps for _ in r])
-                    elif type(r) is np.float64:
-                        r = abs(r) < eps
-
-                    if r:
-                        result[idx * 2 + i][idy * 2 + j] = 1
-
-        border_set = set()
-        index = np.where(result == 1)
-        for a in range(index[0].size):
-            border_set.add(tuple([index[0][a], index[1][a]]))
-
-        return border_set
-
+    梯度求解法"""
     if axis_type == polar:
-        axis1, axis2 = taxis, raxis
-    else:
-        axis1, axis2 = xaxis, yaxis
+        xaxis, yaxis = taxis, raxis
 
-    eps = kwargs.get('eps', 2 ** 1)
-    iterate = kwargs.get('iterate', 7)
-    batch_steps = 2
-    start_set = set()
+    x = np.linspace(*xaxis, steps)
+    y = np.linspace(*yaxis, steps)
+    xx, yy = np.meshgrid(x, y)
+    zz = func(xx, yy)
 
-    for i in range(steps):
-        for j in range(steps):
-            start_set.add(tuple([i, j]))  # start border
+    grad = np.gradient(zz)
+    mold = np.sqrt(grad[0] ** 2 + grad[1] ** 2)
+    zz = np.abs(zz)
 
-    for _ in range(iterate):
-        xx = np.linspace(*axis1, steps)
-        yy = np.linspace(*axis2, steps)
-
-        start_set = recursion(xx, yy, start_set, batch_steps, steps, eps, func)
-
-        steps *= 2
-        eps /= 2
-
-    xs, ys = [], []
-    xx = np.linspace(*axis1, steps)
-    yy = np.linspace(*axis2, steps)
-
-    for idn in start_set:
-        x, y = xx[idn[0]], yy[idn[1]]
-        if axis_type == polar:
-            xs.append(y * np.cos(x))
-            ys.append(y * np.sin(x))
-        else:
-            xs.append(x)
-            ys.append(y)
+    a = zz < k * mold
+    a = a[::-1, :]
 
     fig = plt.figure(figsize=draw_args.get('figsize', None))
     ax = fig.add_subplot()
 
-    ax.scatter(xs, ys, s=1, c=draw_args.get('color', 'r'), marker=',')
+    cmap = colors.ListedColormap([draw_args.get('facecolor', 'papayawhip'), 'red'])
+    ax.imshow(a, cmap=cmap)
+
     painter(ax, fig, draw_args)
+
+
+def implicit_formulae_painter4(xaxis=None, yaxis=None,
+                               axis_type=normal, taxis=None, raxis=None,
+                               steps=1000,
+                               func=None, draw_args=dict(), **kwargs):
+    """f(x, y) = 0
+    Marching squares"""
+    if axis_type == polar:
+        xaxis, yaxis = taxis, raxis
+
+    x = np.linspace(*xaxis, steps)
+    y = np.linspace(*yaxis, steps)
+    xx, yy = np.meshgrid(x, y)
+    zz = func(xx, yy)
+
+    if axis_type == polar:
+        x, y = y * cos(x), y * sin(x)
+
+    r = np.zeros_like(zz, dtype=int)
+    r[zz > 0] = 1
+
+    mask = np.zeros((4, r.shape[0], r.shape[1]), dtype=int)
+    mask[0], mask[1], mask[2], mask[3] = 2, 3, 4, 5
+    mask = mask * r
+
+    w = np.zeros((4, r.shape[0] - 1, r.shape[1] - 1), dtype=int)
+    w[0], w[1], w[2], w[3] = mask[0][:-1, :-1], mask[1][:-1, 1:], mask[2][1:, :-1], mask[3][:-1, :-1]
+    w[w == 0] = 1
+
+    sites = np.prod(w, axis=0)
+
+    middle_x, middle_y = (x[:-1] + x[1:]) / 2, (y[:-1] + y[1:]) / 2
+
+    site_map = {
+        2: [[0, 3]],
+        3: [[0, 1]],
+        4: [[2, 3]],
+        5: [[1, 2]],
+        6: [[1, 3]],
+        8: [[0, 2]],
+        10: [[0, 1], [2, 3]],
+        12: [[0, 3], [1, 2]],
+        15: [[0, 2]],
+        20: [[1, 3]],
+        24: [[1, 2]],
+        30: [[2, 3]],
+        40: [[0, 1]],
+        60: [[0, 3]],
+    }
+
+    lines = []
+
+    for i in range(r.shape[1] - 1):
+        for j in range(r.shape[0] - 1):
+            site = sites[j, i]
+
+            if site == 1 or site == 120:
+                continue
+
+            point_map = [(middle_x[i], y[j]),
+                         (x[i + 1], middle_y[j]),
+                         (middle_x[i], y[j + 1]),
+                         (x[i], middle_y[j])]
+
+            points = site_map[site]
+
+            for point in points:
+                lines.append([point_map[point[0]], point_map[point[1]]])
+
+    fig = plt.figure(figsize=draw_args.get('figsize', None))
+    ax = fig.add_subplot()
+
+    lc = collections.LineCollection(lines, colors=draw_args.get('color', 'r'))
+    ax.add_collection(lc, autolim=True)
+    ax.autoscale_view()
+
+    painter(ax, fig, draw_args)
+
+
+def implicit_formulae_painter5(xaxis=None, yaxis=None,
+                               axis_type=normal, taxis=None, raxis=None,
+                               steps=1000,
+                               func=None, draw_args=dict(), **kwargs):
+    """f(x, y) = 0
+    todo: Tupper interval arithmetic"""
 
 
 def explicit_formulae_painter(xaxis_list=None, axis_type=normal, taxis_list=None,
@@ -156,8 +218,8 @@ def explicit_formulae_painter(xaxis_list=None, axis_type=normal, taxis_list=None
         for x in tqdm(np.linspace(*axis, steps)):
             y = func(x)
             if axis_type == polar:
-                xs.append(y * np.cos(x))
-                ys.append(y * np.sin(x))
+                xs.append(y * cos(x))
+                ys.append(y * sin(x))
             else:
                 xs.append(x)
                 ys.append(y)
@@ -179,8 +241,8 @@ def transform_formulae_painter(taxis_list=None, axis_type=normal, steps=2 ** 10,
         for t in tqdm(np.linspace(*taxis, steps)):
             x, y = func(t)
             if axis_type == polar:
-                xs.append(y * np.cos(x))
-                ys.append(y * np.sin(x))
+                xs.append(y * cos(x))
+                ys.append(y * sin(x))
             else:
                 xs.append(x)
                 ys.append(y)
