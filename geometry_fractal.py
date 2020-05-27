@@ -1,7 +1,7 @@
 from utils import *
 
 
-def dragon_curve(length=2, depth=14, save_path=None):
+def dragon_curve(length=2, depth=14):
     """http://blog.sciencenet.cn/blog-677221-601957.html
 
     main process:
@@ -13,20 +13,30 @@ def dragon_curve(length=2, depth=14, save_path=None):
     right part and left part, it's symmetric"""
 
     angle = 90
-    fractal_painter({'s': 'fr', 'r': 'r+lf+', 'l': '-fr-l'}, angle, length, depth, save_path=save_path)
+    fractal_painter_with_plt({'s': 'Fr', 'r': 'r+lF+', 'l': '-Fr-l'},
+                             angle, length, depth,
+                             draw_args={
+                                 # 'save_path': 'fractal/dragon_curve_depth=%d.png' % depth,
+                             })
 
 
-def koch_curve(length=2, depth=5, save_path=None):
+dragon_curve(depth=14)
+
+
+def koch_curve(length=2, depth=5):
     """http://www.matrix67.com/blog/archives/6231#more-6231"""
 
     angle = 60
     start_point = (-length * 3 ** depth / 2, length * 3 ** depth / 2 / 3 ** 0.5)
 
-    fractal_painter({'s': 'f++f++f', 'f': 'f-f++f-f'}, angle, length, depth, save_path=save_path,
-                    start_point=start_point)
+    fractal_painter_with_plt({'s': 'F++F++F', 'F': 'F-F++F-F'},
+                             angle, length, depth, start_point=start_point,
+                             draw_args={
+                                 # 'save_path': 'fractal/koch_curve_depth=%d.png' % depth
+                             })
 
 
-# koch_curve()
+# koch_curve(depth=5)
 
 
 def pythagoras_tree(p0=(-50, -200), p1=(50, -200), depth=10, save_path=None):
@@ -51,10 +61,15 @@ def pythagoras_tree(p0=(-50, -200), p1=(50, -200), depth=10, save_path=None):
     ax.axis("equal")
     ax.set_axis_off()
 
+    # save_path='fractal/pythagoras_tree_depth=%d.png' % depth
+
     if save_path is not None:
         fig.savefig(save_path, facecolor=fig.get_facecolor())
 
     plt.show()
+
+
+# pythagoras_tree(depth=10)
 
 
 def sierpinski_triangle(p0=(-250, -200), p1=(250, -200), depth=6, save_path=None):
@@ -87,48 +102,88 @@ def sierpinski_triangle(p0=(-250, -200), p1=(250, -200), depth=6, save_path=None
     ax.axis("equal")
     ax.set_axis_off()
 
+    # save_path = 'fractal/sierpinski_triangle_depth=%d.png' % depth
+
     if save_path is not None:
         fig.savefig(save_path, facecolor=fig.get_facecolor())
 
     plt.show()
 
 
-def sierpinski_triangle2(length=0.5, depth=5, save_path=None):
+# sierpinski_triangle(depth=6)
+
+
+def sierpinski_triangle2(length=0.5, depth=5):
     angle = 60
     start_point = (-length * 4 ** depth / 2, -length * 4 ** depth / 2 / 3 ** 0.5)
-    fractal_painter({'s': 'F', 'F': 'F-f-F+f+F+f+F-f-F', 'f': 'f+F+f-F-f-F-f+F+f'}, angle, length, depth,
-                    save_path=save_path, start_point=start_point)
+    fractal_painter_with_plt({'s': 'rF', 'r': 'rF-lF-rF+lF+rF+lF+rF-lF-r', 'l': 'lF+rF+lF-rF-lF-rF-lF+rF+l'}, angle,
+                             length, depth, start_point=start_point,
+                             draw_args={
+                                 # 'save_path': 'fractal/sierpinski_triangle2_depth=%d.png' % depth
+                             })
 
 
-def sierpinski_triangle3(length=2, depth=7, save_path=None):
+# sierpinski_triangle2(depth=5)
+
+
+def sierpinski_triangle3(length=2, depth=7):
     angle = 60
-    fractal_painter({'s': 'f', 'f': 'F-f-F', 'F': 'f+F+f'}, angle, length, depth, save_path=save_path)
+    fractal_painter_with_plt({'s': 'rF', 'r': 'lF-rF-l', 'l': 'rF+lF+r'},
+                             angle, length, depth,
+                             draw_args={
+                                 # 'save_path': 'fractal/sierpinski_triangle3_depth=%d.png' % depth
+                             })
 
 
-def sierpinski(length=5, depth=10, save_path=None):
+# sierpinski_triangle3(depth=7)
+
+
+def sierpinski(length=5, depth=10):
     angle = 45
-    fractal_painter({'s': 'l--f--l--f', 'l': '+r-f-r+', 'r': '-l+f+l-'}, angle, length, depth, save_path=save_path)
+    fractal_painter_with_plt({'s': 'l--F--l--F', 'l': '+r-F-r+', 'r': '-l+F+l-'},
+                             angle, length, depth,
+                             draw_args={
+                                 # 'save_path': 'fractal/sierpinski_depth=%d.png' % depth
+                             })
 
 
-def lvey_c(length=2, depth=14, save_path=None):
+# sierpinski(depth=10)
+
+
+def lvey_c(length=2, depth=14):
     """http://www.matrix67.com/blog/archives/6231#more-6231"""
 
     angle = 45
     start_point = (-length * 2 ** (depth / 2 - 1), length * 2 ** (depth / 2 - 2))
-    fractal_painter({'s': 'f', 'f': '+f--f+'}, angle, length, depth, save_path=save_path, start_point=start_point)
+    fractal_painter_with_plt({'s': 'F', 'F': '+F--F+'},
+                             angle, length, depth, start_point=start_point,
+                             draw_args={
+                                 # 'save_path': 'fractal/lvey_c_depth=%d.png' % depth
+                             })
 
 
-def hilbert(length=10, depth=5, save_path=None):
+# lvey_c(depth=14)
+
+
+def hilbert(length=10, depth=5):
     angle = 90
-    fractal_painter({'s': 'r', 'r': '-lf+rfr+fl-', 'l': '+rf-lfl-fr+'}, angle, length, depth, save_path=save_path)
+    fractal_painter_with_plt({'s': 'r', 'r': '-lF+rFr+Fl-', 'l': '+rF-lFl-Fr+'},
+                             angle, length, depth,
+                             draw_args={
+                                 # 'save_path': 'fractal/hilbert_depth=%d.png' % depth
+                             })
 
 
-def leaf(length=2, depth=6, save_path=None):
+# hilbert(depth=5)
+
+
+def leaf(length=2, depth=6):
     angle = 25
-    fractal_painter({'s': 'x', 'x': 'f-[[x]+x]+f[+fx]-x', 'f': 'ff'}, angle, length, depth, start_angle=-45,
-                    save_path=save_path)
+    fractal_painter_with_plt({'s': 'x', 'x': 'F-[[x]+x]+F[+Fx]-x', 'F': 'FF'},
+                             angle, length, depth, start_angle=-45,
+                             draw_args={
+                                 # 'save_path': 'fractal/leaf_depth=%d.png' % depth
+                             })
 
 
-if __name__ == '__main__':
-    depth = 6
-    sierpinski_triangle(depth=depth, save_path='fractal/sierpinski_triangle%d.png' % depth)
+# leaf(depth=6)

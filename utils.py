@@ -255,10 +255,7 @@ def transform_formulae_painter(taxis_list=None, axis_type=normal, steps=2 ** 10,
     painter(ax, fig, draw_args)
 
 
-def fractal_painter(rule, angle, length, depth, start_angle=None, save_path=None, **kwargs):
-    """几何分形作图"""
-    import matplotlib.collections as collections
-
+def get_path(rule, depth):
     path = rule['s']
 
     for i in range(depth):
@@ -269,57 +266,61 @@ def fractal_painter(rule, angle, length, depth, start_angle=None, save_path=None
             else:
                 current_path.append(p)
         path = "".join(current_path)
+
+    return path
+
+
+def fractal_painter_with_plt(rule, angle, length, depth, start_angle=None,
+                             draw_args=dict(), **kwargs):
+    """调用matplotlib绘图"""
+    path = get_path(rule, depth)
 
     p = (0.0, 0.0)
     start_angle = start_angle or 0
     lines = []
     stack = []
     for c in path:
-        if c in "Ff":
+        if c == 'F':
             r = start_angle * pi / 180
             t = p[0] + length * cos(r), p[1] + length * sin(r)
             lines.append(((p[0], p[1]), (t[0], t[1])))
             p = t
-        elif c == "+":
+        elif c == 'f':
+            r = start_angle * pi / 180
+            t = p[0] + length * cos(r), p[1] + length * sin(r)
+            p = t
+        elif c == '+':
             start_angle += angle
-        elif c == "-":
+        elif c == '-':
             start_angle -= angle
-        elif c == "[":
+        elif c == '[':
             stack.append((p, start_angle))
-        elif c == "]":
+        elif c == ']':
             p, start_angle = stack.pop(-1)
 
     fig, ax = plt.subplots()
-    fig.set_facecolor("papayawhip")
 
     lc = collections.LineCollection(lines)
     ax.add_collection(lc, autolim=True)
     ax.axis("equal")
     ax.invert_yaxis()
 
-    painter(ax, fig, draw_args={'save_path': save_path})
+    painter(ax, fig, draw_args)
 
 
-def fractal_painter_with_turtle(rule, angle, length, depth, t=None, start_point=None, start_angle=None, **kwargs):
-    """调用turtle的分形作图"""
+def fractal_painter_with_turtle(rule, angle, length, depth, start_point=None, start_angle=None,
+                                draw_args=dict(), **kwargs):
+    """调用turtle绘图"""
     import turtle
 
-    path = rule['s']
+    path = get_path(rule, depth)
 
-    for i in range(depth):
-        current_path = []
-        for p in path:
-            if p in rule:
-                current_path.append(rule[p])
-            else:
-                current_path.append(p)
-        path = "".join(current_path)
-
-    if t is None:
-        t = turtle.Turtle()
+    t = turtle.Turtle()
+    screen = turtle.Screen()
 
     t.hideturtle()
     t.speed('fastest')
+    screen.tracer(False)
 
     if start_point is not None:
         t.penup()
@@ -333,8 +334,12 @@ def fractal_painter_with_turtle(rule, angle, length, depth, t=None, start_point=
 
     cache = []
     for p in path:
-        if p in 'fF':
+        if p == 'F':
             t.forward(length)
+        elif p == 'f':
+            t.penup()
+            t.forward(length)
+            t.pendown()
         elif p == '-':
             t.left(angle)
         elif p == '+':
@@ -348,15 +353,58 @@ def fractal_painter_with_turtle(rule, angle, length, depth, t=None, start_point=
             t.setheading(cache_a)
             t.pendown()
 
+    screen.tracer(True)
+    screen.bgcolor(draw_args.get('facecolor', 'papayawhip'))
+    screen.mainloop()
 
-def chaos_fractal_painter(xs, ys, save_path=None):
+
+def fractal_painter_with_tkinter(rule, angle, length, depth, start_point=None, start_angle=None,
+                                 draw_args=dict(), **kwargs):
+    """调用tkinter绘图"""
+    import tkinter
+
+    path = get_path(rule, depth)
+
+    width, height = 1024, 768
+
+    tk = tkinter.Tk()
+    canvas = tkinter.Canvas(tk, width=1024, height=768,
+                            bg=draw_args.get('facecolor', 'papayawhip'))
+    canvas.pack()
+
+    p = (height / 2, width / 2)
+    start_angle = start_angle or 0
+    stack = []
+    for c in path:
+        if c == 'F':
+            r = start_angle * pi / 180
+            t = p[0] + length * cos(r), p[1] + length * sin(r)
+            canvas.create_line(p[0], p[1], t[0], t[1])
+            p = t
+        elif c == 'f':
+            r = start_angle * pi / 180
+            t = p[0] + length * cos(r), p[1] + length * sin(r)
+            p = t
+        elif c == '+':
+            start_angle += angle
+        elif c == '-':
+            start_angle -= angle
+        elif c == '[':
+            stack.append((p, start_angle))
+        elif c == ']':
+            p, start_angle = stack.pop(-1)
+
+    tk.mainloop()
+
+
+def chaos_fractal_painter(xs, ys, draw_args=dict()):
     """混沌分形作图"""
-    fig = plt.figure(figsize=(12, 12))
+    fig = plt.figure(figsize=draw_args.get('figsize', (8, 8)))
     ax = fig.add_subplot()
 
     ax.scatter(xs, ys, s=1, marker=',')
 
-    painter(ax, fig, draw_args={'save_path': save_path})
+    painter(ax, fig, draw_args)
 
 
 def attractor_painter(func, *args, dt=0.001, n_steps=100000, start_xyz=(0.1, 0.1, 0.1),
