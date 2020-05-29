@@ -16,7 +16,7 @@ def painter(ax, fig, draw_args=dict()):
     ax.set_ylim(*draw_args.get('ylim', ax.get_ylim()))
     ax.set_title(draw_args.get('title', ''))
 
-    if draw_args.get('axis_off', True):
+    if not draw_args.get('axis', False):
         ax.set_axis_off()
 
     fig.set_facecolor(draw_args.get('facecolor', 'papayawhip'))
@@ -410,9 +410,9 @@ def chaos_fractal_painter(xs, ys, draw_args=dict()):
 def attractor_painter(func, *args, dt=0.001, n_steps=100000, start_xyz=(0.1, 0.1, 0.1),
                       save_path=None, **kwargs):
     """吸引子作图"""
-    xs = np.empty(n_steps + 1)
-    ys = np.empty(n_steps + 1)
-    zs = np.empty(n_steps + 1)
+    xs = np.zeros(n_steps + 1)
+    ys = np.zeros(n_steps + 1)
+    zs = np.zeros(n_steps + 1)
 
     xs[0], ys[0], zs[0] = start_xyz
 
@@ -430,6 +430,6 @@ def attractor_painter(func, *args, dt=0.001, n_steps=100000, start_xyz=(0.1, 0.1
     fig = plt.figure()
     ax = fig.add_subplot(projection='3d')
 
-    ax.plot(xs, ys, zs, linewidth=1)
+    ax.plot(xs, ys, zs, linewidth=.5)
 
     painter(ax, fig, draw_args={'save_path': save_path})

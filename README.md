@@ -10,3 +10,9 @@
 
 [图赏-吸引子（二）](http://www.citisy.site/posts/31565.html)
 
+[浅谈二维函数作图](http://www.citisy.site/posts/15175.html)
+
+[浅谈分形](http://www.citisy.site/posts/1097.html)
+
+[浅谈吸引子](http://www.citisy.site/posts/49234.html)
+
